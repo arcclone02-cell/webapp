@@ -1,65 +1,171 @@
-h1 {
-  font-family: "Reggae One", cursive;
-  font-size: 2em;
-}
-
-mat-icon {
-  font-size: 2em;
-  margin-right: auto;
-}
-
-mat-toolbar {
-  margin-bottom: 20px;
-}
-
-mat-toolbar > span {
-  margin-left: 10px;
-}
-
-.mat-card:not([class*="mat-elevation-z"]) {
-  box-shadow: 0px 0px 2px 1px #f0f8ff;
-}
-
-.content-wrapper {
-  max-width: 1400px;
-  margin: auto;
-}
-
-.container-wrapper {
+.pexels-header {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #ebeef1;
+  padding: 1rem 2rem;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.emarket-logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 2rem;
+  color: #05a081;
+  margin-right: 2rem;
+  letter-spacing: 0.1em;
+}
+.pexels-navbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.container {
-  width: 400px;
-  margin: 0 25px 25px 0;
+.search-bar {
+  display: flex;
+  margin-right: 1.5rem;
 }
-
-.list {
-  border: solid 1px #f0f8ff;
-  min-height: 60px;
+.search-bar input {
+  border: 1px solid #dbdbdb;
+  border-radius: 4px 0 0 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  outline: none;
+}
+.search-bar button {
+  background: #05a081;
+  color: #fff;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.nav-link {
+  color: #404040;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
+  transition: background 0.2s;
 }
-
-app-new-task {
-  margin-bottom: 30px;
-}
-
-.empty-label {
-  font-size: 2em;
-  padding-top: 10px;
-  text-align: center;
-  opacity: 0.2;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms;
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
+.nav-link:hover {
+  background: #ebeef1;
 }
 
 .logout {
-  margin-left: auto;
+  margin-left: 2rem;
+  color: #f65164 !important;
+}
+
+.homepage-title {
+  text-align: center;
+  color: #181818;
+  margin: 2rem 0 1rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(270px,1fr));
+  gap: 2rem;
+  padding: 2rem 2.5vw;
+}
+.gallery-item {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.22s;
+  border: 1px solid #eee;
+}
+.gallery-item:hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  border-color: #57e1b6;
+}
+.gallery-item img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  background: #fafafa;
+}
+.photo-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem 0.7rem 1rem;
+  font-size: 0.96rem;
+  background: #f8fdfb;
+}
+.photo-price {
+  color: #05967b;
+  font-weight: 600;
+  font-size: 1.06rem;
+}
+
+/* Dialog styles */
+.photo-dialog-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 200;
+}
+.photo-dialog {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  z-index: 210;
+  display: flex;
+  gap: 2.4rem;
+  align-items: center;
+  min-width: 540px;
+  min-height: 330px;
+  animation: dialogAppear 0.25s;
+}
+@keyframes dialogAppear {
+  from { opacity: 0; transform: translate(-50%,-58%) scale(0.98);}
+  to   { opacity: 1; transform: translate(-50%,-50%) scale(1);}
+}
+.dialog-image {
+  max-height: 280px;
+  max-width: 310px;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+}
+.dialog-info {
+  flex: 1;
+  min-width: 210px;
+}
+.dialog-info h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: .4rem;
+}
+.dialog-info p {
+  margin: .3rem 0;
+}
+.dialog-info .photo-price {
+  font-size: 1.18rem;
+}
+.close-dialog {
+  margin-left: 1.2rem;
+  color: #666 !important;
+}
+@media (max-width: 720px) {
+  .photo-dialog { flex-direction: column; min-width: unset; }
+  .dialog-image { max-width: 96vw; max-height: 170px; }
 }

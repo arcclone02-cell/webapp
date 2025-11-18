@@ -9,6 +9,7 @@ import { switchMap, map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
+  getUserId: any;
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore

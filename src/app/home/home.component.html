@@ -1,84 +1,42 @@
-<mat-toolbar color="primary">
-  <mat-icon>local_fire_department</mat-icon>
-  <h1>Art Store</h1>
-  <button class="logout" mat-button (click)="logout()">
-    <mat-icon>logout</mat-icon>
-    Log Out
+<header class="pexels-header">
+  <span class="emarket-logo">E-Market</span>
+  <nav class="pexels-navbar">
+    <form class="search-bar" (submit)="onSearch($event)">
+      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Tìm kiếm tranh, mẫu: flowers, nature, art..." />
+      <button type="submit"><mat-icon>search</mat-icon></button>
+    </form>
+    <a href="#" class="nav-link">Explore</a>
+    <a href="#" class="nav-link">License</a>
+    <a href="#" class="nav-link">Upload</a>
+  </nav>
+  <button class="logout" mat-button (click)="authService.logout()">
+    <mat-icon>logout</mat-icon> Log Out
   </button>
-</mat-toolbar>
+</header>
 
-<div class="content-wrapper">
-  <button mat-button (click)="newArt()">
-    <mat-icon>add</mat-icon>
-    Add Art
-  </button>
+<main>
+  <h2 class="homepage-title">Shop Ảnh Nghệ Thuật Online</h2>
+  <div *ngIf="loading" class="loading-indicator"><mat-spinner></mat-spinner></div>
+  <div class="photo-gallery" *ngIf="!loading">
+    <div class="gallery-item" *ngFor="let photo of photos" (click)="showPhotoDetail(photo)">
+      <img [src]="photo.src.large" [alt]="photo.alt" />
+      <div class="photo-caption">
+        <span>{{ photo.photographer }}</span>
+        <span class="photo-price">{{ randomPrices[photo.id] | currency:'VND':'symbol':'1.0-0' }}</span>
+      </div>
+    </div>
+  </div>
+</main>
 
-  <div class="container-wrapper">
-    <div class="container">
-      <h2>In Stock</h2>
-      <mat-card
-        cdkDropList
-        id="inStock"
-        #inStockList="cdkDropList"
-        [cdkDropListData]="inStock | async"
-        (cdkDropListDropped)="drop($event)"
-        [cdkDropListConnectedTo]="[inBiddingList, soldList]"
-      >
-        <p class="empty-label" *ngIf="(inStock | async)?.length === 0">
-          Empty List
-        </p>
-        <app-art
-          cdkDrag
-          *ngFor="let art of inStock | async"
-          [art]="art"
-          (edit)="edit('inStock', $event)"
-        >
-        </app-art>
-      </mat-card>
-    </div>
-    <div class="container">
-      <h2>In Bidding</h2>
-      <mat-card
-        cdkDropList
-        id="inBidding"
-        #inBiddingList="cdkDropList"
-        [cdkDropListData]="inBidding | async"
-        (cdkDropListDropped)="drop($event)"
-        [cdkDropListConnectedTo]="[inStockList, soldList]"
-      >
-        <p class="empty-label" *ngIf="(inBidding | async)?.length === 0">
-          Empty List
-        </p>
-        <app-art
-          cdkDrag
-          *ngFor="let art of inBidding | async"
-          [art]="art"
-          (edit)="edit('inBidding', $event)"
-        >
-        </app-art>
-      </mat-card>
-    </div>
-    <div class="container">
-      <h2>Sold</h2>
-      <mat-card
-        cdkDropList
-        id="sold"
-        #soldList="cdkDropList"
-        [cdkDropListData]="sold | async"
-        (cdkDropListDropped)="drop($event)"
-        [cdkDropListConnectedTo]="[inStockList, inBiddingList]"
-      >
-        <p class="empty-label" *ngIf="(sold | async)?.length === 0">
-          Empty List
-        </p>
-        <app-art
-          cdkDrag
-          *ngFor="let art of sold | async"
-          [art]="art"
-          (edit)="edit('sold', $event)"
-        >
-        </app-art>
-      </mat-card>
-    </div>
+<!-- Photo detail dialog -->
+<div class="photo-dialog-backdrop" *ngIf="openPhoto" (click)="closeDialog()"></div>
+<div class="photo-dialog" *ngIf="openPhoto">
+  <img [src]="openPhoto.src.large" [alt]="openPhoto.alt" class="dialog-image" />
+  <div class="dialog-info">
+    <h3>{{ openPhoto.alt || 'Photo by ' + openPhoto.photographer }}</h3>
+    <p>Tác giả: {{ openPhoto.photographer }}</p>
+    <p>Giá: <span class="photo-price">{{ randomPrices[openPhoto.id] | currency:'VND':'symbol':'1.0-0' }}</span></p>
+    <button mat-raised-button color="primary" (click)="addToCart(openPhoto)">Add to cart</button>
+    <button mat-button class="close-dialog" (click)="closeDialog()">Đóng</button>
   </div>
 </div>
