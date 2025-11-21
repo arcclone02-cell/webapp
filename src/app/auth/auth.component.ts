@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from './auth.service';
-
 @Component({
   selector: 'app-auth',
   standalone: true,
@@ -18,15 +17,23 @@ export class AuthComponent {
   isLoginMode = true;
   loading = false;
   error = '';
-
+  showForgotPassword = false;
+  fogotEmail = '';
+  fogotMessage = '';
   constructor(private authService: AuthService, private router: Router) {}
 
   toggleMode() {
     this.isLoginMode = !this.isLoginMode;
     this.error = '';
+    this.showForgotPassword = false;
+    this.fogotEmail = '';
+    this.fogotMessage = '';
   }
 
   onSubmit() {
+    if(this.showForgotPassword){
+      return;
+    }
     if (!this.email || !this.password || (!this.isLoginMode && !this.name)) {
       this.error = 'Please fill in all fields.';
       return;
@@ -34,6 +41,7 @@ export class AuthComponent {
 
     this.loading = true;
     this.error = '';
+    this.fogotMessage = '';
 
     if (this.isLoginMode) {
       // Đăng nhập với Firebase
@@ -61,5 +69,24 @@ export class AuthComponent {
         },
       });
     }
+  }
+  onSendResetEmail() {
+    this.fogotMessage = '';
+    this.error = '';
+    if (!this.fogotEmail) {
+      this.error = 'Please enter your email to get passsword reset link.';
+      return;
+    }
+    this.loading = true;
+    this.authService.forgotPassword(this.fogotEmail).subscribe({
+      next: () => {
+        this.loading = false;
+        this.fogotMessage = 'Password reset email sent. Please check your inbox.';
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err.message || 'Failed to send password reset email.';
+      },
+    });
   }
 }

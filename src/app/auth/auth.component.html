@@ -4,34 +4,71 @@
       <h2 *ngIf="isLoginMode">Login</h2>
       <h2 *ngIf="!isLoginMode">Register</h2>
     </div>
-
-    <form (ngSubmit)="onSubmit()" class="auth-form" novalidate>
+    <form (ngSubmit)="onSubmit()" class="auth-form" novalidate *ngIf="!showForgotPassword">
       <div class="form-group" *ngIf="!isLoginMode">
         <label for="name">Name</label>
         <input id="name" type="text" [(ngModel)]="name" name="name" required />
       </div>
-
       <div class="form-group">
         <label for="email">Email</label>
         <input id="email" type="email" [(ngModel)]="email" name="email" required />
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
         <input id="password" type="password" [(ngModel)]="password" name="password" required />
       </div>
-
       <div class="form-actions">
         <button type="submit" class="btn btn-primary">
           {{ isLoginMode ? 'Login' : 'Register' }}
         </button>
-
         <button type="button" (click)="toggleMode()" class="btn btn-outline">
           {{ isLoginMode ? 'Create new account' : 'Already have account? Login' }}
         </button>
       </div>
-
+      <!-- Nút quên mật khẩu cho LOGIN mode -->
+      <button
+        *ngIf="isLoginMode && !showForgotPassword"
+        type="button"
+        class="btn btn-link"
+        (click)="showForgotPassword = true"
+        style="margin-top: 10px; color: #90caf9; background: none; border: none; cursor: pointer;"
+      >
+        Quên mật khẩu?
+      </button>
       <p class="error" *ngIf="error">{{ error }}</p>
     </form>
+      
+    <!-- Form quên mật khẩu -->
+    <div *ngIf="showForgotPassword" class="forgot-pw-form" style="margin-top:1rem">
+      <div class="form-group">
+        <label for="forgot-email">Nhập email tài khoản của bạn</label>
+        <input
+          id="forgot-email"
+          type="email"
+          [(ngModel)]="fogotEmail"
+          name="forgotEmail"
+          required
+        />
+      </div>
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onSendResetEmail()"
+          [disabled]="loading"
+        >
+          Gửi mail khôi phục
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="showForgotPassword = false"
+        >
+          Hủy
+        </button>
+      </div>
+      <p class="error" *ngIf="fogotMessage" style="color:#4caf50;">{{ fogotMessage }}</p>
+      <p class="error" *ngIf="error && !fogotMessage">{{ error }}</p>
+    </div>
   </div>
 </div>
