@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/e-market', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://admin:MRmagical123@cluster0.pnnzz3r.mongodb.net/e-market', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })

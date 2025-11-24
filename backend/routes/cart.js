@@ -10,4 +10,17 @@ router.post('/remove', authMiddleware, cartController.removeFromCart);
 router.post('/clear', authMiddleware, cartController.clearCart);
 router.post('/update-quantity', authMiddleware, cartController.updateQuantity);
 
+// DELETE routes for RESTful API
+router.delete('/', authMiddleware, cartController.clearCart);
+router.delete('/:itemId', authMiddleware, (req, res) => {
+  req.body.itemId = req.params.itemId;
+  cartController.removeFromCart(req, res);
+});
+
+// PUT route for updating quantity
+router.put('/:itemId', authMiddleware, (req, res) => {
+  req.body.itemId = req.params.itemId;
+  cartController.updateQuantity(req, res);
+});
+
 module.exports = router;

@@ -96,4 +96,10 @@ export class AuthService {
     const user = this.currentUserValue;
     return user ? user._id || null : null;
   }
+
+  // Get token
+  getToken(): string | null {
+    const user = this.currentUserValue;
+    return user ? user.token || null : null;
+  }
 }

@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService, User } from './auth/auth.service';
+import { CartService } from './cart/cart.service';
 
 @Component({
   selector: 'app-root',
@@ -26,16 +27,26 @@ import { AuthService, User } from './auth/auth.service';
 export class AppComponent implements OnInit {
   title = 'E-Market';
   currentUser: User | null = null;
+  cartCount = 0;
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
     // Subscribe to current user
     this.authService.currentUser.subscribe((user) => {
       this.currentUser = user;
+      if (user) {
+        this.cartService.loadCartCount();
+      }
+    });
+
+    // Subscribe to cart count
+    this.cartService.cartCount$.subscribe((count) => {
+      this.cartCount = count;
     });
   }
 

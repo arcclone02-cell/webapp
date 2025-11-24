@@ -1,0 +1,88 @@
+<div class="cart-container">
+  <div class="cart-header">
+    <h1>🛒 Giỏ Hàng</h1>
+    <p *ngIf="cartItems.length === 0" class="empty-cart">Giỏ hàng của bạn trống</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Đang tải giỏ hàng...</p>
+  </div>
+
+  <div *ngIf="!loading && cartItems.length > 0" class="cart-content">
+    <div class="cart-items">
+      <mat-card *ngFor="let item of cartItems; let i = index" class="cart-item">
+        <div class="item-image">
+          <img [src]="item.src?.medium || item.src?.large || item.image || '/assets/placeholder.svg'" 
+               [alt]="item.title || item.alt || 'Sản phẩm'" 
+               onError="this.src='/assets/placeholder.svg'" />
+        </div>
+
+        <div class="item-details">
+          <h3>{{ item.title || item.alt || 'Sản phẩm' }}</h3>
+          <p class="price">{{ item.price | currency: 'VND' }}</p>
+        </div>
+
+        <div class="item-quantity">
+          <label [for]="'qty-' + i">Số lượng:</label>
+          <input
+            type="number"
+            [id]="'qty-' + i"
+            [(ngModel)]="item.quantity"
+            (change)="updateQuantity(i, item.quantity)"
+            min="1"
+            max="100"
+          />
+        </div>
+
+        <div class="item-total">
+          <p>{{ item.price * item.quantity | currency: 'VND' }}</p>
+        </div>
+
+        <button
+          mat-icon-button
+          class="delete-btn"
+          (click)="removeItem(i)"
+          title="Xóa khỏi giỏ"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card>
+    </div>
+
+    <div class="cart-summary">
+      <mat-card class="summary-card">
+        <h3>Tóm Tắt Đơn Hàng</h3>
+
+        <div class="summary-row">
+          <span>Tổng sản phẩm:</span>
+          <span class="value">{{ itemCount }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Tổng cộng:</span>
+          <span class="value total">{{ total | currency: 'VND' }}</span>
+        </div>
+
+        <div class="actions">
+          <button
+            mat-raised-button
+            class="checkout-btn"
+            (click)="checkout()"
+          >
+            <mat-icon>payment</mat-icon>
+            Thanh Toán
+          </button>
+
+          <button
+            mat-raised-button
+            class="clear-btn"
+            (click)="clearCart()"
+          >
+            <mat-icon>delete_sweep</mat-icon>
+            Xóa Toàn Bộ
+          </button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

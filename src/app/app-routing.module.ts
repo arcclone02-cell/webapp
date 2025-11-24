@@ -4,12 +4,14 @@ import { AuthComponent } from './auth/auth.component';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LibraryComponent } from './library/library.component';
+import { CartComponent } from './cart/cart.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: AuthComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'library', component: LibraryComponent, canActivate: [AuthGuard] }
+  { path: 'library', component: LibraryComponent, canActivate: [AuthGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

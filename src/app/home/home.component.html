@@ -2,16 +2,16 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <h1>DIGITAL ART MARKETPLACE</h1>
-      <p>DISCOVER STUNNING DIGITAL ARTWORKS</p>
-      <button class="cta-button">EXPLORE GALLERY</button>
+      <h1>Chợ ảnh digital</h1>
+      <p>Khám phá những tác phẩm nghệ thuật số tuyệt đẹp</p>
+      <button class="cta-button">Khám phá bộ sưu tập</button>
     </div>
   </div>
 
   <!-- Search & Filter Section -->
   <div class="search-filter-section">
     <form class="search-bar" (submit)="onSearch($event)">
-      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Search digital artworks, illustrations, designs..." />
+      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="tìm kiếm ảnh, chủ đề, nghệ sĩ,..." />
       <button type="submit"><mat-icon>search</mat-icon></button>
     </form>
     <div class="filter-controls">
@@ -78,7 +78,7 @@
       <!-- FEATURED ARTWORKS -->
       <section class="product-section">
         <div class="section-header">
-          <h2>🎨 FEATURED ARTWORKS</h2>
+          <h2>🎨 khám phá Artwork</h2>
           <a href="#" class="view-all">VIEW ALL</a>
         </div>
         <div *ngIf="loading" class="loading-indicator"><mat-spinner></mat-spinner></div>
@@ -87,7 +87,7 @@
             <div class="card-image">
               <img [src]="product.src.large" [alt]="product.alt" />
               <div class="card-overlay">
-                <button class="view-btn">VIEW DETAILS</button>
+                <button class="view-btn">XEM CHI TIẾT</button>
               </div>
             </div>
             <div class="card-info">
@@ -102,7 +102,7 @@
       <!-- NEW ARRIVALS -->
       <section class="product-section">
         <div class="section-header">
-          <h2>✨ NEW ARRIVALS</h2>
+          <h2>✨ mới đăng</h2>
           <a href="#" class="view-all">VIEW ALL</a>
         </div>
         <div class="products-grid" *ngIf="newArrivals.length > 0">
@@ -110,7 +110,7 @@
             <div class="card-image">
               <img [src]="product.src.large" [alt]="product.alt" />
               <div class="card-overlay">
-                <button class="view-btn">VIEW DETAILS</button>
+                <button class="view-btn">XEM CHI TIẾT</button>
               </div>
             </div>
             <div class="card-info">
@@ -133,7 +133,7 @@
             <div class="card-image">
               <img [src]="product.src.large" [alt]="product.alt" />
               <div class="card-overlay">
-                <button class="view-btn">VIEW DETAILS</button>
+                <button class="view-btn">XEM CHI TIẾT</button>
               </div>
             </div>
             <div class="card-info">
@@ -147,11 +147,11 @@
 
       <!-- Newsletter Section -->
       <section class="newsletter-section">
-        <h2>SUBSCRIBE TO OUR NEWSLETTER</h2>
-        <p>Get exclusive digital artworks and updates on new collections</p>
+        <h2>ĐĂNG KÝ NHẬN BẢN TIN</h2>
+        <p>Nhận các tác phẩm nghệ thuật kỹ thuật số độc quyền và cập nhật về các bộ sưu tập mới</p>
         <form class="newsletter-form">
           <input type="email" placeholder="Enter your email" />
-          <button type="submit" class="subscribe-btn">SUBSCRIBE</button>
+          <button type="submit" class="subscribe-btn">ĐĂNG KÝ</button>
         </form>
       </section>
     </main>
@@ -170,11 +170,11 @@
     <div class="artwork-details">
       <p><strong>Resolution:</strong> 4K</p>
       <p><strong>Format:</strong> PNG/JPG</p>
-      <p><strong>License:</strong> Full Rights</p>
+      <p><strong>License:</strong> bản quyền</p>
     </div>
     <div class="dialog-actions">
-      <button class="add-to-cart-btn" (click)="addToCart(openPhoto)">ADD TO CART</button>
-      <button class="wishlist-btn">♥ WISHLIST</button>
+      <button class="add-to-cart-btn" (click)="addToCart(openPhoto)">thêm vào giỏ hàng</button>
+      <button class="wishlist-btn">♥ YÊU THÍCH</button>
     </div>
   </div>
 </div>

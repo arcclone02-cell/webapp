@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../auth/auth.service';
+import { CartService } from '../cart/cart.service';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     public authService: AuthService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -164,6 +166,8 @@ export class HomeComponent implements OnInit {
       next: (response: any) => {
         alert('Đã thêm vào giỏ hàng của bạn!');
         this.closeDialog();
+        // Cập nhật cart count
+        this.cartService.incrementCartCount(1);
       },
       error: (err) => {
         console.error('Error adding to cart:', err);
