@@ -1,52 +1,154 @@
-# EMarket
+# 🏪 E-Market - Full Stack Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.6.
+> A modern e-commerce platform built with Angular, Node.js, Express, and MongoDB
 
-## Development server
+## 📸 Overview
 
-To start a local development server, run:
+E-Market is a complete web application where users can:
+- 🔐 Register and login securely with JWT authentication
+- 📦 Create and manage their own digital products
+- 🛍️ Browse and purchase products from other users
+- 📚 Access personal library with 2 sections:
+  - **"Sản phẩm của bạn"** (Your Products) - Products you created
+  - **"Sản phẩm đã mua"** (Purchased Items) - Products you bought
+- 🛒 Manage shopping cart
+- ⭐ Review and rate products
 
+## 🚀 Quick Start (5 minutes)
+
+### Prerequisites
+- Node.js 16+
+- MongoDB (local or Atlas)
+
+### Setup
 ```bash
-ng serve
+# 1. Install dependencies
+npm install
+
+# 2. Setup environment
+cp backend/.env.example backend/.env
+# Edit backend/.env with your MongoDB URI
+
+# 3. Initialize database (optional)
+npm run db:setup
+
+# 4. Run application
+npm run dev
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Access: http://localhost:4200
 
-## Code scaffolding
+## 📁 Project Structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+e-market/
+├── src/app/
+│   ├── auth/          # Login/Register
+│   ├── home/          # Browse products
+│   ├── library/       # ⭐ NEW: 2-tab library view
+│   └── ...
+├── backend/           # ⭐ NEW: Node.js/Express API
+│   ├── models/        # MongoDB schemas
+│   ├── controllers/   # Business logic
+│   ├── routes/        # API endpoints
+│   └── server.js
+├── package.json       # Updated with backend scripts
+└── Guides...          # Setup documentation
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🛠️ Tech Stack
+
+**Frontend**: Angular 20, Material Design, TypeScript, RxJS
+**Backend**: Node.js, Express.js, MongoDB, Mongoose, JWT
+**Database**: MongoDB (Local or Cloud Atlas)
+
+## 📦 What's Included
+
+✅ Complete backend API with 4 database collections
+✅ Library component with product & purchase management
+✅ Authentication system (JWT)
+✅ Product CRUD operations
+✅ Shopping cart functionality
+✅ Responsive Material Design UI
+✅ Error handling & validation
+✅ Database initialization scripts
+
+## 📡 API Endpoints
+
+**Auth**: `/api/auth/register`, `/api/auth/login`, `/api/auth/forgot-password`
+**Products**: `/api/products` (CRUD)
+**Purchases**: `/api/purchases/purchases`, `/api/purchases/sales`
+**Cart**: `/api/cart/add`, `/api/cart/remove`, etc.
+
+## 🔧 Available Commands
 
 ```bash
-ng generate --help
+npm start              # Frontend development server
+npm run server:dev     # Backend with auto-reload
+npm run dev            # Both frontend & backend
+npm run db:init        # Create database indexes
+npm run db:seed        # Load sample data
+npm run db:setup       # Complete database setup
 ```
 
-## Building
+## 📊 Database Collections
 
-To build the project run:
+- **Users**: Authentication & user profiles
+- **Products**: User-created products
+- **Purchases**: Transaction history
+- **Carts**: Shopping cart items
 
+## 📚 Documentation
+
+- **QUICKSTART.md** - Quick start guide
+- **BACKEND_SETUP_GUIDE.md** - Detailed backend setup
+- **WORK_COMPLETED.md** - Summary of completed work
+- **MONGODB_MIGRATION_GUIDE.md** - Firebase migration notes
+
+## 🧪 Test Accounts (after `npm run db:seed`)
+
+```
+Email: user1@example.com | Password: password123
+Email: user2@example.com | Password: password123
+Email: admin@example.com | Password: admin123
+```
+
+## 🔐 Security Features
+
+- Passwords hashed with bcryptjs
+- JWT token authentication
+- CORS protection
+- Input validation
+- Authorization checks
+
+## 🐛 Troubleshooting
+
+**MongoDB won't connect?**
 ```bash
-ng build
+# Start MongoDB
+mongod  # or: brew services start mongodb-community
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+**Port already in use?**
 ```bash
-ng test
+# Change PORT in backend/.env or kill the process
 ```
 
-## Running end-to-end tests
+See detailed guides for more help.
 
-For end-to-end (e2e) testing, run:
+## 📖 Learn More
+
+Check the comprehensive guides included in the project:
+- Setup instructions
+- API documentation
+- Database schema
+- Deployment guide
+
+---
+
+**Last Updated**: November 24, 2025  
+**Status**: ✅ Ready for development  
+**Next Steps**: Implement checkout & payment integration
 
 ```bash
 ng e2e

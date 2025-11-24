@@ -7,8 +7,7 @@ import {
   UrlTree
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,24 +15,22 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private afAuth: AngularFireAuth,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> {
-    return this.afAuth.authState.pipe(
-      take(1),
-      map(user => {
-        if (user) {
-          return true; // Đã đăng nhập → cho vào
-        } else {
-          // Chưa đăng nhập → redirect về login
-          return this.router.createUrlTree(['/login']);
-        }
-      })
-    );
+  ): boolean | UrlTree {
+    const currentUser = this.authService.currentUserValue;
+    if (currentUser && currentUser.token) {
+      // authorised so return true
+      return true;
+    }
+
+    // not logged in so redirect to login page with the return url
+    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+    return false;
   }
 }

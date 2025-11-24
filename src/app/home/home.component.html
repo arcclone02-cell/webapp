@@ -1,42 +1,180 @@
-<header class="pexels-header">
-  <span class="emarket-logo">E-Market</span>
-  <nav class="pexels-navbar">
-    <form class="search-bar" (submit)="onSearch($event)">
-      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Tìm kiếm tranh, mẫu: flowers, nature, art..." />
-      <button type="submit"><mat-icon>search</mat-icon></button>
-    </form>
-    <a href="#" class="nav-link">Explore</a>
-    <a href="#" class="nav-link">License</a>
-    <a href="#" class="nav-link">Upload</a>
-  </nav>
-  <button class="logout" mat-button (click)="authService.logout()">
-    <mat-icon>logout</mat-icon> Log Out
-  </button>
-</header>
-
-<main>
-  <h2 class="homepage-title">Shop Ảnh Nghệ Thuật Online</h2>
-  <div *ngIf="loading" class="loading-indicator"><mat-spinner></mat-spinner></div>
-  <div class="photo-gallery" *ngIf="!loading">
-    <div class="gallery-item" *ngFor="let photo of photos" (click)="showPhotoDetail(photo)">
-      <img [src]="photo.src.large" [alt]="photo.alt" />
-      <div class="photo-caption">
-        <span>{{ photo.photographer }}</span>
-        <span class="photo-price">{{ randomPrices[photo.id] | currency:'VND':'symbol':'1.0-0' }}</span>
-      </div>
+<div class="home-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>DIGITAL ART MARKETPLACE</h1>
+      <p>DISCOVER STUNNING DIGITAL ARTWORKS</p>
+      <button class="cta-button">EXPLORE GALLERY</button>
     </div>
   </div>
-</main>
 
-<!-- Photo detail dialog -->
+  <!-- Search & Filter Section -->
+  <div class="search-filter-section">
+    <form class="search-bar" (submit)="onSearch($event)">
+      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Search digital artworks, illustrations, designs..." />
+      <button type="submit"><mat-icon>search</mat-icon></button>
+    </form>
+    <div class="filter-controls">
+      <select [(ngModel)]="selectedColor" name="category" class="filter-select">
+        <option value="">ALL CATEGORIES</option>
+        <option value="abstract">Abstract</option>
+        <option value="landscape">Landscape</option>
+        <option value="portrait">Portrait</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="nature">Nature</option>
+      </select>
+      <input type="range" [(ngModel)]="priceRange" name="price" min="0" max="1000000" class="price-slider" />
+      <span class="price-text">Max: ₫{{ priceRange | number:'1.0-0' }}</span>
+    </div>
+  </div>
+
+  <!-- Main Content with Sidebar -->
+  <div class="content-wrapper">
+    <!-- Sidebar Filter -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>FILTER BY</h3>
+        
+        <div class="filter-group">
+          <p class="filter-title">Style</p>
+          <div class="filter-options">
+            <label><input type="checkbox" /> Abstract</label>
+            <label><input type="checkbox" /> Cyberpunk</label>
+            <label><input type="checkbox" /> Watercolor</label>
+            <label><input type="checkbox" /> Minimalist</label>
+            <label><input type="checkbox" /> Illustration</label>
+            <label><input type="checkbox" /> Graffiti</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <p class="filter-title">Resolution</p>
+          <div class="filter-options">
+            <label><input type="checkbox" /> 2K</label>
+            <label><input type="checkbox" /> 4K</label>
+            <label><input type="checkbox" /> 8K</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <p class="filter-title">File Format</p>
+          <div class="filter-options">
+            <label><input type="checkbox" /> PNG</label>
+            <label><input type="checkbox" /> JPG</label>
+            <label><input type="checkbox" /> PSD</label>
+            <label><input type="checkbox" /> AI</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <p class="filter-title">Price Range</p>
+          <input type="range" min="0" max="1000000" step="50000" class="sidebar-slider" />
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- FEATURED ARTWORKS -->
+      <section class="product-section">
+        <div class="section-header">
+          <h2>🎨 FEATURED ARTWORKS</h2>
+          <a href="#" class="view-all">VIEW ALL</a>
+        </div>
+        <div *ngIf="loading" class="loading-indicator"><mat-spinner></mat-spinner></div>
+        <div class="products-grid" *ngIf="!loading && featured.length > 0">
+          <div class="product-card" *ngFor="let product of featured" (click)="showPhotoDetail(product)">
+            <div class="card-image">
+              <img [src]="product.src.large" [alt]="product.alt" />
+              <div class="card-overlay">
+                <button class="view-btn">VIEW DETAILS</button>
+              </div>
+            </div>
+            <div class="card-info">
+              <h4>{{ product.alt | slice:0:35 }}...</h4>
+              <p class="style-tag" *ngIf="product.alt">{{ product.photographer | slice:0:20 }}</p>
+              <p class="price">₫{{ randomPrices[product.id] | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEW ARRIVALS -->
+      <section class="product-section">
+        <div class="section-header">
+          <h2>✨ NEW ARRIVALS</h2>
+          <a href="#" class="view-all">VIEW ALL</a>
+        </div>
+        <div class="products-grid" *ngIf="newArrivals.length > 0">
+          <div class="product-card" *ngFor="let product of newArrivals" (click)="showPhotoDetail(product)">
+            <div class="card-image">
+              <img [src]="product.src.large" [alt]="product.alt" />
+              <div class="card-overlay">
+                <button class="view-btn">VIEW DETAILS</button>
+              </div>
+            </div>
+            <div class="card-info">
+              <h4>{{ product.alt | slice:0:35 }}...</h4>
+              <p class="style-tag" *ngIf="product.alt">{{ product.photographer | slice:0:20 }}</p>
+              <p class="price">₫{{ randomPrices[product.id] | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRENDING ARTWORKS -->
+      <section class="product-section">
+        <div class="section-header">
+          <h2>🔥 TRENDING ARTWORKS</h2>
+          <a href="#" class="view-all">VIEW ALL</a>
+        </div>
+        <div class="products-grid" *ngIf="hotSelling.length > 0">
+          <div class="product-card" *ngFor="let product of hotSelling" (click)="showPhotoDetail(product)">
+            <div class="card-image">
+              <img [src]="product.src.large" [alt]="product.alt" />
+              <div class="card-overlay">
+                <button class="view-btn">VIEW DETAILS</button>
+              </div>
+            </div>
+            <div class="card-info">
+              <h4>{{ product.alt | slice:0:35 }}...</h4>
+              <p class="style-tag" *ngIf="product.alt">{{ product.photographer | slice:0:20 }}</p>
+              <p class="price">₫{{ randomPrices[product.id] | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Newsletter Section -->
+      <section class="newsletter-section">
+        <h2>SUBSCRIBE TO OUR NEWSLETTER</h2>
+        <p>Get exclusive digital artworks and updates on new collections</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Enter your email" />
+          <button type="submit" class="subscribe-btn">SUBSCRIBE</button>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Product Detail Dialog -->
 <div class="photo-dialog-backdrop" *ngIf="openPhoto" (click)="closeDialog()"></div>
 <div class="photo-dialog" *ngIf="openPhoto">
+  <button class="dialog-close" (click)="closeDialog()">×</button>
   <img [src]="openPhoto.src.large" [alt]="openPhoto.alt" class="dialog-image" />
   <div class="dialog-info">
-    <h3>{{ openPhoto.alt || 'Photo by ' + openPhoto.photographer }}</h3>
-    <p>Tác giả: {{ openPhoto.photographer }}</p>
-    <p>Giá: <span class="photo-price">{{ randomPrices[openPhoto.id] | currency:'VND':'symbol':'1.0-0' }}</span></p>
-    <button mat-raised-button color="primary" (click)="addToCart(openPhoto)">Add to cart</button>
-    <button mat-button class="close-dialog" (click)="closeDialog()">Đóng</button>
+    <h3>{{ openPhoto.alt }}</h3>
+    <p class="artist">Artist: {{ openPhoto.photographer }}</p>
+    <p class="price-large">₫{{ randomPrices[openPhoto.id] | number:'1.0-0' }}</p>
+    <div class="artwork-details">
+      <p><strong>Resolution:</strong> 4K</p>
+      <p><strong>Format:</strong> PNG/JPG</p>
+      <p><strong>License:</strong> Full Rights</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="add-to-cart-btn" (click)="addToCart(openPhoto)">ADD TO CART</button>
+      <button class="wishlist-btn">♥ WISHLIST</button>
+    </div>
   </div>
 </div>

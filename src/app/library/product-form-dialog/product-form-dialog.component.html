@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Chỉnh sửa sản phẩm' : 'Tạo sản phẩm mới' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <!-- Product Title -->
+    <mat-form-field class="full-width">
+      <mat-label>Tên sản phẩm</mat-label>
+      <input matInput formControlName="title" placeholder="Nhập tên sản phẩm" />
+      <mat-error *ngIf="form.get('title')?.hasError('required')">
+        Tên sản phẩm là bắt buộc
+      </mat-error>
+      <mat-error *ngIf="form.get('title')?.hasError('minlength')">
+        Tên sản phẩm phải có ít nhất 3 ký tự
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Product Description -->
+    <mat-form-field class="full-width">
+      <mat-label>Mô tả sản phẩm</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        placeholder="Nhập mô tả chi tiết sản phẩm"
+        rows="4"
+      ></textarea>
+      <mat-error *ngIf="form.get('description')?.hasError('required')">
+        Mô tả sản phẩm là bắt buộc
+      </mat-error>
+      <mat-error *ngIf="form.get('description')?.hasError('minlength')">
+        Mô tả phải có ít nhất 10 ký tự
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Product Price -->
+    <mat-form-field class="full-width">
+      <mat-label>Giá sản phẩm (VND)</mat-label>
+      <input matInput type="number" formControlName="price" placeholder="0" />
+      <mat-error *ngIf="form.get('price')?.hasError('required')">
+        Giá sản phẩm là bắt buộc
+      </mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('min')">
+        Giá phải lớn hơn hoặc bằng 0
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Product Image URL -->
+    <mat-form-field class="full-width">
+      <mat-label>URL hình ảnh</mat-label>
+      <input
+        matInput
+        formControlName="image"
+        placeholder="https://example.com/image.jpg"
+        (change)="onImageUrlChange($event)"
+      />
+      <mat-error *ngIf="form.get('image')?.hasError('required')">
+        URL hình ảnh là bắt buộc
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Image Preview -->
+    <div class="image-preview-container" *ngIf="form.get('image')?.value">
+      <img class="image-preview" [src]="form.get('image')?.value" alt="Preview" />
+    </div>
+
+    <!-- Category -->
+    <mat-form-field class="full-width">
+      <mat-label>Danh mục</mat-label>
+      <mat-select formControlName="category">
+        <mat-option value="art">Nghệ thuật</mat-option>
+        <mat-option value="photo">Ảnh</mat-option>
+        <mat-option value="design">Thiết kế</mat-option>
+        <mat-option value="other">Khác</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field class="full-width">
+      <mat-label>Trạng thái</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="active">Đang bán</mat-option>
+        <mat-option value="inactive">Ngừng bán</mat-option>
+        <mat-option value="sold">Đã bán</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!form.valid">
+    {{ isEditMode ? 'Cập nhật' : 'Tạo mới' }}
+  </button>
+</mat-dialog-actions>

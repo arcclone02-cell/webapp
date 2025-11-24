@@ -1,9 +1,0 @@
-{
-  "hosting": {
-    "target": "e-market",
-    "public": "dist/e-market",
-    "ignore": [
-      "**/.*"
-    ]
-  }
-}

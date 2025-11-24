@@ -1,59 +1,99 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import firebase from 'firebase/compat/app';
-import { from, Observable, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
+export interface User {
+  _id?: string;
+  name: string;
+  email: string;
+  token?: string;
+  role?: string;
+  createdAt?: Date;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  getUserId: any;
-  constructor(
-    private afAuth: AngularFireAuth,
-    private afs: AngularFirestore
-  ) {}
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
+  public currentUserValue: User | null = null;
 
-  // Sign in with email/password. Returns an Observable that resolves with the user credential.
-  login(email: string, password: string): Observable<any> {
-    return from(this.afAuth.signInWithEmailAndPassword(email, password));
+  constructor(private http: HttpClient) {
+    const storedUser = localStorage.getItem('currentUser');
+    this.currentUserSubject = new BehaviorSubject<User | null>(
+      storedUser ? JSON.parse(storedUser) : null
+    );
+    this.currentUser = this.currentUserSubject.asObservable();
+    this.currentUserValue = this.currentUserSubject.value;
   }
 
-  // Register new user, update Firebase Auth profile (displayName), then create a Firestore document for the user
-  register(name: string, email: string, password: string): Observable<any> {
-    return from(this.afAuth.createUserWithEmailAndPassword(email, password)).pipe(
-      // userCredential is the result of creating the user
-      switchMap((userCredential) => {
-        const user = userCredential.user;
-        if (!user) {
-          return of(userCredential);
+  // Sign in with email/password
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/login`, { email, password }).pipe(
+      map(response => {
+        // login successful if there's a jwt token in the response
+        if (response && response.token) {
+          // store user details and jwt token in local storage
+          const user: User = {
+            _id: response.user._id,
+            name: response.user.name,
+            email: response.user.email,
+            token: response.token,
+            role: response.user.role,
+            createdAt: response.user.createdAt,
+          };
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          this.currentUserValue = user;
         }
-
-        // First update the Firebase Auth profile (displayName)
-        return from(user.updateProfile({ displayName: name })).pipe(
-          // After updating profile, create Firestore user document
-          switchMap(() => {
-            const uid = user.uid;
-            const userDocRef = this.afs.doc(`users/${uid}`);
-            const userData = {
-              displayName: name,
-              email: email,
-              role: 'user', // default role - do NOT set 'admin' from client in production
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            };
-            return from(userDocRef.set(userData)).pipe(map(() => userCredential));
-          })
-        );
+        return response;
       })
     );
   }
-  // forget password
-  forgotPassword(email: string): Observable<void> {
-    return from(this.afAuth.sendPasswordResetEmail(email));
+
+  // Register new user
+  register(name: string, email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/register`, { name, email, password }).pipe(
+      map(response => {
+        // registration successful if there's a jwt token in the response
+        if (response && response.token) {
+          // store user details and jwt token in local storage
+          const user: User = {
+            _id: response.user._id,
+            name: response.user.name,
+            email: response.user.email,
+            token: response.token,
+            role: response.user.role,
+            createdAt: response.user.createdAt,
+          };
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          this.currentUserValue = user;
+        }
+        return response;
+      })
+    );
   }
+
+  // Forgot password
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/forgot-password`, { email });
+  }
+
   // Sign out
-  logout(): Promise<void> {
-    return this.afAuth.signOut();
+  logout(): void {
+    // remove user from local storage
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+    this.currentUserValue = null;
+  }
+
+  // Get user ID
+  getUserId(): string | null {
+    const user = this.currentUserValue;
+    return user ? user._id || null : null;
   }
 }
