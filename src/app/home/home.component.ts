@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../auth/auth.service';
 import { CartService } from '../cart/cart.service';
+import { ToastService } from '../_helpers/toast.service';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -28,9 +29,11 @@ export class HomeComponent implements OnInit {
   newArrivals: Photo[] = [];
   hotSelling: Photo[] = [];
   featured: Photo[] = [];
+  freeProducts: any[] = [];
   searchTerm: string = '';
   loading: boolean = false;
   openPhoto: Photo | null = null;
+  openFreeProduct: any = null;
   randomPrices: { [id: number]: number } = {};
   userId: string | null = null;
   selectedColor: string = '';
@@ -40,12 +43,26 @@ export class HomeComponent implements OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     public authService: AuthService,
-    private cartService: CartService
+    private cartService: CartService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadFreeProducts();
     this.userId = this.authService.getUserId();
+  }
+
+  loadFreeProducts(): void {
+    this.http.get<any>(`${environment.apiUrl}/products/free`).subscribe({
+      next: data => {
+        this.freeProducts = data || [];
+      },
+      error: err => {
+        console.error('Error loading free products:', err);
+        this.freeProducts = [];
+      }
+    });
   }
 
   loadProducts(): void {
@@ -133,15 +150,22 @@ export class HomeComponent implements OnInit {
 
   showPhotoDetail(photo: Photo) {
     this.openPhoto = photo;
+    this.openFreeProduct = null;
+  }
+
+  showFreeProductDetail(product: any) {
+    this.openFreeProduct = product;
+    this.openPhoto = null;
   }
 
   closeDialog() {
     this.openPhoto = null;
+    this.openFreeProduct = null;
   }
 
   async addToCart(photo: Photo) {
     if (!this.userId) {
-      alert('Bạn cần đăng nhập để thêm vào giỏ hàng!');
+      this.toastService.warning('Bạn cần đăng nhập để thêm vào giỏ hàng!');
       return;
     }
 
@@ -164,14 +188,42 @@ export class HomeComponent implements OnInit {
       { headers }
     ).subscribe({
       next: (response: any) => {
-        alert('Đã thêm vào giỏ hàng của bạn!');
+        this.toastService.success('Đã thêm vào giỏ hàng của bạn!');
         this.closeDialog();
         // Cập nhật cart count
         this.cartService.incrementCartCount(1);
       },
       error: (err) => {
         console.error('Error adding to cart:', err);
-        alert('Có lỗi khi thêm vào giỏ hàng. Vui lòng thử lại!');
+        this.toastService.error('Có lỗi khi thêm vào giỏ hàng. Vui lòng thử lại!');
+      }
+    });
+  }
+
+  async addFreeProductToCart(product: any) {
+    if (!this.userId) {
+      this.toastService.warning('Bạn cần đăng nhập để mua sản phẩm!');
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${currentUser?.token || ''}`,
+      'Content-Type': 'application/json'
+    });
+
+    this.http.post(
+      `${environment.apiUrl}/purchases/free`,
+      { productId: product._id, quantity: 1 },
+      { headers }
+    ).subscribe({
+      next: (response: any) => {
+        this.toastService.success('Bạn đã lấy sản phẩm miễn phí thành công! Kiểm tra mục "Sản phẩm đã mua"');
+        this.closeDialog();
+      },
+      error: (err) => {
+        console.error('Error purchasing free product:', err);
+        this.toastService.error('Lỗi khi lấy sản phẩm miễn phí. Vui lòng thử lại!');
       }
     });
   }

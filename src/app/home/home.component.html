@@ -70,6 +70,13 @@
           <p class="filter-title">Price Range</p>
           <input type="range" min="0" max="1000000" step="50000" class="sidebar-slider" />
         </div>
+
+        <div class="filter-group">
+          <p class="filter-title">Miễn phí</p>
+          <div class="filter-options">
+            <label><input type="checkbox" /> Sản phẩm miễn phí</label>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -145,6 +152,35 @@
         </div>
       </section>
 
+      <!-- FREE PRODUCTS -->
+      <section class="product-section">
+        <div class="section-header">
+          <h2>🎁 MIỄN PHÍ</h2>
+          <a href="#" class="view-all">VIEW ALL</a>
+        </div>
+        <div class="products-grid" *ngIf="freeProducts.length > 0">
+          <div class="product-card" *ngFor="let product of freeProducts" (click)="showFreeProductDetail(product)">
+            <div class="card-image">
+              <img [src]="product.image" [alt]="product.title" />
+              <div class="card-overlay">
+                <button class="view-btn">XEM CHI TIẾT</button>
+              </div>
+              <div class="free-badge">MIỄN PHÍ</div>
+            </div>
+            <div class="card-info">
+              <h4>{{ product.title | slice:0:35 }}...</h4>
+              <p class="style-tag" *ngIf="product.tags && product.tags.length > 0">
+                {{ product.tags[0] }}
+              </p>
+              <p class="price">₫0</p>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="freeProducts.length === 0" class="empty-state">
+          <p>Hiện không có sản phẩm miễn phí</p>
+        </div>
+      </section>
+
       <!-- Newsletter Section -->
       <section class="newsletter-section">
         <h2>ĐĂNG KÝ NHẬN BẢN TIN</h2>
@@ -159,7 +195,9 @@
 </div>
 
 <!-- Product Detail Dialog -->
-<div class="photo-dialog-backdrop" *ngIf="openPhoto" (click)="closeDialog()"></div>
+<div class="photo-dialog-backdrop" *ngIf="openPhoto || openFreeProduct" (click)="closeDialog()"></div>
+
+<!-- Pexels Product Dialog -->
 <div class="photo-dialog" *ngIf="openPhoto">
   <button class="dialog-close" (click)="closeDialog()">×</button>
   <img [src]="openPhoto.src.large" [alt]="openPhoto.alt" class="dialog-image" />
@@ -174,6 +212,27 @@
     </div>
     <div class="dialog-actions">
       <button class="add-to-cart-btn" (click)="addToCart(openPhoto)">thêm vào giỏ hàng</button>
+      <button class="wishlist-btn">♥ YÊU THÍCH</button>
+    </div>
+  </div>
+</div>
+
+<!-- Free Product Dialog -->
+<div class="photo-dialog" *ngIf="openFreeProduct">
+  <button class="dialog-close" (click)="closeDialog()">×</button>
+  <img [src]="openFreeProduct.image" [alt]="openFreeProduct.title" class="dialog-image" />
+  <div class="dialog-info">
+    <h3>{{ openFreeProduct.title }}</h3>
+    <p class="artist">{{ openFreeProduct.description | slice:0:60 }}...</p>
+    <p class="price-large">₫0 <span style="font-size: 0.8em; color: #f5576c;">MIỄN PHÍ</span></p>
+    <div class="artwork-details">
+      <p *ngIf="openFreeProduct.tags && openFreeProduct.tags.length > 0">
+        <strong>Tags:</strong> {{ openFreeProduct.tags.join(', ') }}
+      </p>
+      <p><strong>Category:</strong> {{ openFreeProduct.category || 'Other' }}</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="add-to-cart-btn" (click)="addFreeProductToCart(openFreeProduct)">MUA NGAY</button>
       <button class="wishlist-btn">♥ YÊU THÍCH</button>
     </div>
   </div>

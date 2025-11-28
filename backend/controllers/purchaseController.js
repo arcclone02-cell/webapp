@@ -36,6 +36,55 @@ exports.getSales = async (req, res) => {
   }
 };
 
+// Create purchase for free product
+exports.createFreePurchase = async (req, res) => {
+  try {
+    const { productId, quantity = 1 } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({ message: 'Vui lòng cung cấp productId' });
+    }
+
+    // Get product data
+    const Product = require('../models/Product');
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+
+    if (!product.isFree) {
+      return res.status(400).json({ message: 'Sản phẩm này không phải miễn phí' });
+    }
+
+    const purchase = new Purchase({
+      buyerId: req.userId,
+      productId,
+      sellerId: product.userId,
+      productData: {
+        title: product.title,
+        price: 0,
+        image: product.image,
+        description: product.description
+      },
+      quantity,
+      totalPrice: 0,
+      status: 'completed',
+      paymentMethod: 'free'
+    });
+
+    await purchase.save();
+
+    res.status(201).json({
+      message: 'Lấy sản phẩm miễn phí thành công',
+      purchase
+    });
+  } catch (error) {
+    console.error('Create free purchase error:', error);
+    res.status(500).json({ message: 'Lỗi', error: error.message });
+  }
+};
+
 // Create purchase
 exports.createPurchase = async (req, res) => {
   try {

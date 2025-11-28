@@ -52,6 +52,9 @@
                   {{ product.viewCount }}
                 </span>
               </div>
+              <div class="tags" *ngIf="product.tags && product.tags.length > 0">
+                <span class="tag" *ngFor="let tag of product.tags">{{ tag }}</span>
+              </div>
             </mat-card-content>
             <mat-card-actions>
               <button mat-button (click)="openProductForm(product)">
@@ -130,7 +133,7 @@
               </div>
             </mat-card-content>
             <mat-card-actions *ngIf="!purchase.review">
-              <button mat-button color="primary">
+              <button mat-button color="primary" (click)="openReviewDialog(purchase)">
                 <mat-icon>rate_review</mat-icon>
                 Đánh giá sản phẩm
               </button>

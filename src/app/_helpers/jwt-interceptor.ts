@@ -1,15 +1,36 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+  HttpInterceptorFn,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 
+// Functional interceptor (Angular 15+)
+export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next) => {
+  const authService = inject(AuthService);
+  
+  const currentUser = authService.currentUserValue;
+  const isLoggedIn = currentUser && currentUser.token;
+  const isApiUrl = req.url.startsWith(environment.apiUrl);
+  
+  if (isLoggedIn && isApiUrl) {
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
+  }
+
+  return next(req);
+};
+
+// Class-based interceptor (for backward compatibility)
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}

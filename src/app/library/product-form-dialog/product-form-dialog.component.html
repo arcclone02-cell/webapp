@@ -43,23 +43,28 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Product Image URL -->
-    <mat-form-field class="full-width">
-      <mat-label>URL hình ảnh</mat-label>
-      <input
-        matInput
-        formControlName="image"
-        placeholder="https://example.com/image.jpg"
-        (change)="onImageUrlChange($event)"
-      />
-      <mat-error *ngIf="form.get('image')?.hasError('required')">
-        URL hình ảnh là bắt buộc
+    <!-- Product Image Upload -->
+    <div class="image-upload-section">
+      <div class="upload-container">
+        <label class="image-upload-label">
+          <input 
+            type="file" 
+            accept="image/*" 
+            (change)="onFileSelected($event)"
+            class="file-input"
+          />
+          <span class="upload-text">Tải ảnh lên</span>
+        </label>
+        <div class="file-name">
+          <span class="label">File ảnh:</span>
+          <span class="name">{{ selectedFile?.name || 'Chưa chọn file' }}</span>
+        </div>
+        <!-- Image Preview -->
+        <img *ngIf="imagePreview" class="image-preview" [src]="imagePreview" alt="Preview" />
+      </div>
+      <mat-error *ngIf="form.get('image')?.hasError('required')" class="error-message">
+        Hình ảnh là bắt buộc
       </mat-error>
-    </mat-form-field>
-
-    <!-- Image Preview -->
-    <div class="image-preview-container" *ngIf="form.get('image')?.value">
-      <img class="image-preview" [src]="form.get('image')?.value" alt="Preview" />
     </div>
 
     <!-- Category -->
@@ -73,7 +78,21 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- Status -->
+    <!-- Tags -->
+    <mat-form-field class="full-width">
+      <mat-label>Tags (cách nhau bằng dấu phẩy)</mat-label>
+      <input matInput formControlName="tags" placeholder="ví dụ: abstract, colorful, modern" />
+    </mat-form-field>
+
+    <!-- Free Product -->
+    <div class="checkbox-field">
+      <input 
+        type="checkbox" 
+        id="isFree" 
+        formControlName="isFree"
+      />
+      <label for="isFree">Sản phẩm miễn phí (từ Pexels)</label>
+    </div>    <!-- Status -->
     <mat-form-field class="full-width">
       <mat-label>Trạng thái</mat-label>
       <mat-select formControlName="status">

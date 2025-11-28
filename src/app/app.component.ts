@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService, User } from './auth/auth.service';
 import { CartService } from './cart/cart.service';
+import { ToastContainerComponent } from './components/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ import { CartService } from './cart/cart.service';
     MatIconModule,
     MatMenuModule,
     MatDividerModule,
+    ToastContainerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],

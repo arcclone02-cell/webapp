@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { CartService } from './cart.service';
+import { ToastService } from '../_helpers/toast.service';
 
 interface CartItem {
   _id?: string;
@@ -50,7 +51,8 @@ export class CartComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +83,7 @@ export class CartComponent implements OnInit {
       })
       .catch(err => {
         console.error('Error loading cart:', err);
+        this.toastService.error('Lỗi khi tải giỏ hàng. Vui lòng thử lại!');
         this.loading = false;
       });
   }
@@ -120,12 +123,14 @@ export class CartComponent implements OnInit {
         console.log('Remove response:', data);
         if (data.success) {
           this.cartItems.splice(itemIndex, 1);
+          this.toastService.success('Đã xóa sản phẩm khỏi giỏ hàng');
           // Cập nhật cart count
           this.cartService.decrementCartCount(quantity);
         }
       })
       .catch(err => {
         console.error('Error removing item:', err);
+        this.toastService.error('Lỗi khi xóa sản phẩm');
         // Xóa local ngay cả khi API thất bại
         this.cartItems.splice(itemIndex, 1);
         this.cartService.decrementCartCount(quantity);
@@ -164,6 +169,7 @@ export class CartComponent implements OnInit {
       .then(data => {
         if (data.success) {
           item.quantity = quantity;
+          this.toastService.success('Cập nhật số lượng thành công');
           // Cập nhật cart count dựa vào sự thay đổi
           if (quantityDifference > 0) {
             this.cartService.incrementCartCount(quantityDifference);
@@ -174,6 +180,7 @@ export class CartComponent implements OnInit {
       })
       .catch(err => {
         console.error('Error updating quantity:', err);
+        this.toastService.error('Lỗi khi cập nhật số lượng');
         // Cập nhật local ngay cả khi API thất bại
         item.quantity = quantity;
         if (quantityDifference > 0) {
@@ -202,11 +209,15 @@ export class CartComponent implements OnInit {
       .then(data => {
         if (data.success) {
           this.cartItems = [];
+          this.toastService.success('Giỏ hàng đã được xóa');
           // Reset cart count
           this.cartService.resetCartCount();
         }
       })
-      .catch(err => console.error('Error clearing cart:', err));
+      .catch(err => {
+        console.error('Error clearing cart:', err);
+        this.toastService.error('Lỗi khi xóa giỏ hàng');
+      });
   }
 
   checkout(): void {

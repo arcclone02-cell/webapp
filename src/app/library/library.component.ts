@@ -12,7 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { LibraryService, Product, Purchase } from './library.service';
 import { AuthService } from '../auth/auth.service';
+import { ToastService } from '../_helpers/toast.service';
 import { ProductFormDialogComponent } from './product-form-dialog/product-form-dialog.component';
+import { ReviewDialogComponent } from './review-dialog/review-dialog.component';
 
 @Component({
   selector: 'app-library',
@@ -47,6 +49,7 @@ export class LibraryComponent implements OnInit {
   constructor(
     private libraryService: LibraryService,
     private authService: AuthService,
+    private toastService: ToastService,
     private dialog: MatDialog
   ) {}
 
@@ -94,24 +97,32 @@ export class LibraryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        console.log('Form result:', result);
         if (product && product._id) {
           // Update product
           this.libraryService.updateProduct(product._id, result).subscribe({
             next: () => {
+              console.log('Product updated successfully');
               this.loadMyProducts();
+              this.toastService.success('Cập nhật sản phẩm thành công!');
             },
             error: (error) => {
               console.error('Error updating product:', error);
+              this.toastService.error('Lỗi cập nhật sản phẩm: ' + error.error?.message);
             },
           });
         } else {
           // Create product
+          console.log('Creating product with data:', result);
           this.libraryService.createProduct(result).subscribe({
-            next: () => {
+            next: (response) => {
+              console.log('Product created successfully:', response);
               this.loadMyProducts();
+              this.toastService.success('Sản phẩm tạo thành công!');
             },
             error: (error) => {
               console.error('Error creating product:', error);
+              this.toastService.error('Lỗi tạo sản phẩm: ' + error.error?.message);
             },
           });
         }
@@ -139,6 +150,34 @@ export class LibraryComponent implements OnInit {
       style: 'currency',
       currency: 'VND',
     }).format(price);
+  }
+
+  // Open review dialog
+  openReviewDialog(purchase: Purchase): void {
+    const dialogRef = this.dialog.open(ReviewDialogComponent, {
+      width: '500px',
+      data: {
+        purchaseId: purchase._id,
+        productTitle: purchase.productData.title,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((review) => {
+      if (review) {
+        console.log('Submitting review:', review);
+        this.libraryService.addReview(purchase._id!, review).subscribe({
+          next: () => {
+            console.log('Review added successfully');
+            this.toastService.success('Cảm ơn bạn đã đánh giá sản phẩm!');
+            this.loadPurchasedProducts();
+          },
+          error: (error) => {
+            console.error('Error adding review:', error);
+            this.toastService.error('Lỗi thêm đánh giá: ' + error.error?.message);
+          },
+        });
+      }
+    });
   }
 
   // Get status badge color

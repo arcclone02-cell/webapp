@@ -7,6 +7,7 @@ const authMiddleware = require('../middleware/auth');
 router.get('/purchases', authMiddleware, purchaseController.getPurchases);
 router.get('/sales', authMiddleware, purchaseController.getSales);
 router.post('/', authMiddleware, purchaseController.createPurchase);
+router.post('/free', authMiddleware, purchaseController.createFreePurchase);
 router.put('/:id/status', authMiddleware, purchaseController.updatePurchaseStatus);
 router.post('/:id/review', authMiddleware, purchaseController.addReview);
 

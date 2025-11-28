@@ -1,0 +1,55 @@
+.product-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.rating-section {
+  margin-bottom: 24px;
+
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+  }
+}
+
+.stars {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.star {
+  font-size: 32px;
+  cursor: pointer;
+  color: #ddd;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #ffc107;
+    transform: scale(1.1);
+  }
+
+  &.filled {
+    color: #ffc107;
+  }
+}
+
+.rating-display {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-dialog-actions {
+  padding: 16px 0 0 0;
+  gap: 8px;
+}

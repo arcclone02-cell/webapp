@@ -14,7 +14,9 @@
     "db:init": "node backend/scripts/initializeDB.js",
     "db:seed": "node backend/scripts/seedDatabase.js",
     "db:setup": "node backend/scripts/setupDatabase.js",
-    "db:check": "node backend/scripts/checkUsers.js"
+    "db:check": "node backend/scripts/checkUsers.js",
+    "db:seed-free": "node backend/scripts/seedFreeProducts.js",
+    "db:reset": "node backend/scripts/resetDatabase.js"
   },
   "prettier": {
     "printWidth": 100,

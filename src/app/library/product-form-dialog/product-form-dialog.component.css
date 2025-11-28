@@ -3,6 +3,113 @@
   margin-bottom: 16px;
 }
 
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+
+  label {
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+  }
+}
+
+.image-upload-section {
+  margin-bottom: 16px;
+}
+
+.upload-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.image-upload-label {
+  display: block;
+  position: relative;
+  flex-shrink: 0;
+  width: 120px;
+  padding: 16px;
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+  background: #f5f7ff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+
+  &:hover {
+    border-color: #764ba2;
+    background: #ede9fe;
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-text {
+  display: block;
+  color: #667eea;
+  font-weight: 500;
+  font-size: 12px;
+  pointer-events: none;
+  word-break: break-word;
+
+  &::before {
+    content: '📁';
+    display: block;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+}
+
+.file-name {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+
+  .label {
+    font-weight: 500;
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .name {
+    color: #333;
+    font-size: 14px;
+    word-break: break-all;
+  }
+}
+
+.image-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
 .image-preview-container {
   margin: 16px 0;
   text-align: center;
@@ -12,7 +119,15 @@
     max-height: 200px;
     border-radius: 4px;
     object-fit: cover;
+    border: 1px solid #e0e0e0;
   }
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
 }
 
 mat-dialog-actions {

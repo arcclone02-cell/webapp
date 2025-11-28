@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Đánh giá sản phẩm</h2>
+
+<mat-dialog-content>
+  <p class="product-name">{{ data.productTitle }}</p>
+
+  <!-- Rating Stars -->
+  <div class="rating-section">
+    <label>Đánh giá:</label>
+    <div class="stars">
+      <mat-icon
+        *ngFor="let i of [1, 2, 3, 4, 5]"
+        class="star"
+        [class.filled]="i <= rating"
+        (click)="setRating(i)"
+      >
+        star
+      </mat-icon>
+    </div>
+    <span class="rating-display">{{ rating }}/5 sao</span>
+  </div>
+
+  <!-- Comment -->
+  <form [formGroup]="form">
+    <mat-form-field class="full-width">
+      <mat-label>Nhận xét (tùy chọn)</mat-label>
+      <textarea
+        matInput
+        formControlName="comment"
+        placeholder="Chia sẻ ý kiến của bạn về sản phẩm này..."
+        rows="4"
+      ></textarea>
+      <mat-error *ngIf="form.get('comment')?.hasError('required')">
+        Vui lòng nhập nhận xét
+      </mat-error>
+      <mat-error *ngIf="form.get('comment')?.hasError('minlength')">
+        Nhận xét phải có ít nhất 5 ký tự
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!form.valid">
+    Gửi đánh giá
+  </button>
+</mat-dialog-actions>

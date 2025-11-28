@@ -1,5 +1,18 @@
 const Product = require('../models/Product');
 
+// Get free products
+exports.getFreeProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isFree: true, status: 'active' })
+      .sort('-createdAt');
+    
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Get free products error:', error);
+    res.status(500).json({ message: 'Lỗi', error: error.message });
+  }
+};
+
 // Get all products of current user
 exports.getMyProducts = async (req, res) => {
   try {

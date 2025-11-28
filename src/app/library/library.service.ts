@@ -12,6 +12,8 @@ export interface Product {
   image: string;
   category: string;
   status: string;
+  tags?: string[];
+  isFree?: boolean;
   ratings: {
     average: number;
     count: number;
