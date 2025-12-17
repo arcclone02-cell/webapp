@@ -83,6 +83,49 @@ export class AuthService {
     return this.http.post<any>(`${environment.apiUrl}/auth/forgot-password`, { email });
   }
 
+  // Reset password
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
+  // Send OTP
+  sendVerificationOtp(email: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/send-otp`, { email });
+  }
+
+  // Verify OTP
+  verifyOtp(email: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/verify-otp`, { email, otp });
+  }
+
+  // Resend OTP
+  resendOtp(email: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/resend-otp`, { email });
+  }
+
+  // Get current user
+  getCurrentUser(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/auth/current-user`);
+  }
+
+  // Change password
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/change-password`, {
+      currentPassword,
+      newPassword
+    });
+  }
+
+  // Get purchases
+  getPurchases(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/purchases/purchases`);
+  }
+
+  // Get sales
+  getSales(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/purchases/sales`);
+  }
+
   // Sign out
   logout(): void {
     // remove user from local storage

@@ -66,11 +66,13 @@
         <div class="actions">
           <button
             mat-raised-button
-            class="checkout-btn"
-            (click)="checkout()"
+            class="payment-btn"
+            (click)="processPayment()"
+            [disabled]="paymentLoading || cartItems.length === 0"
           >
-            <mat-icon>payment</mat-icon>
-            Thanh Toán
+            <mat-icon *ngIf="!paymentLoading">credit_card</mat-icon>
+            <mat-spinner *ngIf="paymentLoading" diameter="20"></mat-spinner>
+            {{ paymentLoading ? 'Đang xử lý...' : '💳 Thanh Toán (VN PAYMENT)' }}
           </button>
 
           <button

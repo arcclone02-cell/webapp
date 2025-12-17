@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -50,6 +50,60 @@ export class AppComponent implements OnInit {
     this.cartService.cartCount$.subscribe((count) => {
       this.cartCount = count;
     });
+
+    // Block screenshot capability
+    this.blockScreenshot();
+  }
+
+  // Block screenshot - prevents Print Screen, Ctrl+Shift+S, Ctrl+Alt+S, etc.
+  private blockScreenshot(): void {
+    // Disable Print Screen
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        console.warn('⚠️ Screenshot attempt blocked');
+        alert('Chụp màn hình bị vô hiệu hóa để bảo vệ bảo mật');
+      }
+      
+      // Block Ctrl+Shift+S (Chrome/Edge screenshot)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        console.warn('⚠️ Ctrl+Shift+S blocked');
+        alert('Chụp màn hình bị vô hiệu hóa để bảo vệ bảo mật');
+      }
+      
+      // Block Ctrl+Alt+S
+      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        console.warn('⚠️ Ctrl+Alt+S blocked');
+        alert('Chụp màn hình bị vô hiệu hóa để bảo vệ bảo mật');
+      }
+    });
+
+    // Disable right-click to prevent Print and Save options
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      console.warn('⚠️ Right-click attempt blocked');
+      return false;
+    });
+
+    // Detect DevTools opening
+    const devtoolsOpen = () => {
+      const start = performance.now();
+      debugger;
+      const end = performance.now();
+      if (end - start > 100) {
+        console.warn('⚠️ DevTools detected - screenshot features disabled');
+      }
+    };
+    
+    setInterval(devtoolsOpen, 1000);
+  }
+
+  @HostListener('window:screencaptureprohibited', ['$event'])
+  onScreenCaptureAttempt(event: any): void {
+    console.warn('⚠️ Screen capture attempt detected');
+    alert('Chụp màn hình bị vô hiệu hóa để bảo vệ bảo mật');
   }
 
   logout(): void {

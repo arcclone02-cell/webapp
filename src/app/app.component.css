@@ -108,4 +108,21 @@ mat-toolbar {
 main.main-content {
   min-height: calc(100vh - 64px);
   background: white;
+  /* Prevent screenshots and screen captures */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+/* Disable print functionality */
+@media print {
+  * {
+    display: none !important;
+  }
+  
+  body::before {
+    content: "Printing is disabled";
+    display: block;
+  }
 }

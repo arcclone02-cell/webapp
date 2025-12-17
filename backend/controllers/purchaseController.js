@@ -40,9 +40,20 @@ exports.getSales = async (req, res) => {
 exports.createFreePurchase = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
+    const userId = req.userId;
+
+    console.log('🎁 Creating free purchase');
+    console.log('👤 User ID:', userId);
+    console.log('📦 Product ID:', productId);
+    console.log('📊 Quantity:', quantity);
 
     if (!productId) {
       return res.status(400).json({ message: 'Vui lòng cung cấp productId' });
+    }
+
+    if (!userId) {
+      console.error('❌ No user ID in request');
+      return res.status(401).json({ message: 'Không xác thực được người dùng' });
     }
 
     // Get product data
@@ -50,15 +61,17 @@ exports.createFreePurchase = async (req, res) => {
     const product = await Product.findById(productId);
 
     if (!product) {
+      console.error('❌ Product not found:', productId);
       return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
     }
 
     if (!product.isFree) {
+      console.error('❌ Product is not free:', productId);
       return res.status(400).json({ message: 'Sản phẩm này không phải miễn phí' });
     }
 
     const purchase = new Purchase({
-      buyerId: req.userId,
+      buyerId: userId,
       productId,
       sellerId: product.userId,
       productData: {
@@ -75,12 +88,15 @@ exports.createFreePurchase = async (req, res) => {
 
     await purchase.save();
 
+    console.log('✅ Free purchase created successfully:', purchase._id);
+
     res.status(201).json({
       message: 'Lấy sản phẩm miễn phí thành công',
       purchase
     });
   } catch (error) {
-    console.error('Create free purchase error:', error);
+    console.error('❌ Create free purchase error:', error.message);
+    console.error('Stack:', error.stack);
     res.status(500).json({ message: 'Lỗi', error: error.message });
   }
 };

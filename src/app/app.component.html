@@ -25,6 +25,10 @@
       <span>{{ currentUser?.name }}</span>
     </button>
     <mat-divider></mat-divider>
+    <button mat-menu-item (click)="navigateTo('/profile')">
+      <mat-icon>person</mat-icon>
+      <span>Thông tin cá nhân</span>
+    </button>
     <button mat-menu-item (click)="navigateTo('/library')">
       <mat-icon>library_books</mat-icon>
       <span>Thư viện</span>

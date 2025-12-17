@@ -1,0 +1,288 @@
+<div class="profile-container">
+  <!-- Notification Modal -->
+  <app-notification-modal
+    [message]="notificationMessage"
+    [type]="notificationType"
+    [visible]="notificationVisible"
+    (close)="closeNotification()"
+  ></app-notification-modal>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Đang tải thông tin...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadUserProfile()" class="btn btn-primary">Thử lại</button>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="user && !loading" class="profile-content">
+    <!-- Header -->
+    <div class="profile-header">
+      <div class="header-content">
+        <h1>{{ user.name }}</h1>
+        <p class="user-email">{{ user.email }}</p>
+        <div class="header-info">
+          <span>👤 Thành viên từ {{ formatDate(user.createdAt) }}</span>
+          <span>|</span>
+          <span>🕐 Lần đăng nhập cuối: {{ formatDateTime(user.lastLogin) }}</span>
+        </div>
+      </div>
+      <button (click)="logout()" class="btn btn-danger logout-btn">
+        📤 Đăng xuất
+      </button>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-navigation">
+      <button
+        (click)="setActiveTab('info')"
+        [class.active]="activeTab === 'info'"
+        class="tab-btn"
+      >
+        📋 Thông tin cá nhân
+      </button>
+      <button
+        (click)="setActiveTab('purchases')"
+        [class.active]="activeTab === 'purchases'"
+        class="tab-btn"
+      >
+        🛍️ Ảnh đã mua
+      </button>
+      <button
+        (click)="setActiveTab('sales')"
+        [class.active]="activeTab === 'sales'"
+        class="tab-btn"
+      >
+        📸 Ảnh đã bán
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Personal Info Tab -->
+      <div *ngIf="activeTab === 'info'" class="tab-pane">
+        <!-- User Information Box -->
+        <div class="info-box">
+          <h2>📋 Thông tin cá nhân</h2>
+          
+          <div class="form-group">
+            <label for="username">Tên người dùng</label>
+            <input 
+              id="username"
+              type="text" 
+              [value]="user.name" 
+              readonly
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              id="email"
+              type="email" 
+              [value]="user.email" 
+              readonly
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <div class="password-group">
+              <input 
+                id="password"
+                type="password" 
+                value="••••••••" 
+                readonly
+                class="form-input"
+              />
+              <button 
+                (click)="toggleChangePassword()"
+                class="btn btn-change-password"
+              >
+                🔐 Đổi mật khẩu
+              </button>
+            </div>
+          </div>
+
+          <!-- Change Password Form -->
+          <div *ngIf="showChangePassword" class="change-password-form">
+            <div class="form-divider"></div>
+            <h3>Đổi mật khẩu</h3>
+
+            <div class="form-group">
+              <label for="current-password">Mật khẩu hiện tại</label>
+              <input
+                id="current-password"
+                type="password"
+                [(ngModel)]="currentPassword"
+                placeholder="Nhập mật khẩu hiện tại"
+                [disabled]="changePasswordLoading"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="new-password">Mật khẩu mới</label>
+              <input
+                id="new-password"
+                type="password"
+                [(ngModel)]="newPassword"
+                placeholder="Nhập mật khẩu mới"
+                [disabled]="changePasswordLoading"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-password">Xác nhận mật khẩu</label>
+              <input
+                id="confirm-password"
+                type="password"
+                [(ngModel)]="confirmPassword"
+                placeholder="Xác nhận mật khẩu mới"
+                [disabled]="changePasswordLoading"
+                class="form-input"
+              />
+            </div>
+
+            <p class="error" *ngIf="changePasswordError">
+              {{ changePasswordError }}
+            </p>
+            <p class="message-success" *ngIf="changePasswordMessage">
+              {{ changePasswordMessage }}
+            </p>
+
+            <div class="form-actions">
+              <button
+                (click)="changePassword()"
+                class="btn btn-primary"
+                [disabled]="changePasswordLoading"
+              >
+                {{ changePasswordLoading ? 'Đang xử lý...' : '✅ Đổi mật khẩu' }}
+              </button>
+              <button
+                (click)="toggleChangePassword()"
+                class="btn btn-outline"
+                [disabled]="changePasswordLoading"
+              >
+                ❌ Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account & Payment Box -->
+        <div class="account-box">
+          <h2>💰 Tài khoản & Thanh toán</h2>
+          
+          <div class="account-info">
+            <div class="info-item">
+              <label>Số dư tài khoản</label>
+              <div class="balance-display">
+                <span class="balance-value">0 VNĐ</span>
+                <small>Sẽ được cập nhật khi có giao dịch</small>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <label>Phương thức thanh toán</label>
+              <div class="payment-methods">
+                <div class="method-item">
+                  <input type="radio" id="card" name="payment" value="card" disabled />
+                  <label for="card">💳 Thẻ tín dụng</label>
+                </div>
+                <div class="method-item">
+                  <input type="radio" id="vnpay" name="payment" value="vnpay" disabled />
+                  <label for="vnpay">🏦 VNPay</label>
+                </div>
+                <div class="method-item">
+                  <input type="radio" id="bank" name="payment" value="bank" disabled />
+                  <label for="bank">🏧 Chuyển khoản ngân hàng</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchases Tab -->
+      <div *ngIf="activeTab === 'purchases'" class="tab-pane">
+        <div class="purchases-section">
+          <h2>🛍️ Ảnh đã mua</h2>
+          
+          <div *ngIf="purchasesLoading" class="loading-state">
+            <p>Đang tải ảnh đã mua...</p>
+          </div>
+          
+          <div *ngIf="!purchasesLoading && purchases.length === 0" class="empty-state">
+            <p>Bạn chưa mua ảnh nào</p>
+            <button class="btn btn-primary" routerLink="/library">
+              Mua sắm ngay
+            </button>
+          </div>
+
+          <div *ngIf="!purchasesLoading && purchases.length > 0" class="gallery-grid">
+            <div *ngFor="let purchase of purchases" class="gallery-item">
+              <div class="gallery-image-wrapper">
+                <img 
+                  [src]="purchase.productData?.image || '/assets/placeholder.svg'" 
+                  [alt]="purchase.productData?.title"
+                  onError="this.src='/assets/placeholder.svg'"
+                  class="gallery-image"
+                />
+              </div>
+              <div class="gallery-info">
+                <h3>{{ purchase.productData?.title }}</h3>
+                <p class="purchase-date">Mua: {{ formatDate(purchase.createdAt) }}</p>
+                <p class="purchase-price">{{ purchase.productData?.price | currency: 'VND' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Tab -->
+      <div *ngIf="activeTab === 'sales'" class="tab-pane">
+        <div class="sales-section">
+          <h2>📸 Ảnh đã bán</h2>
+          
+          <div *ngIf="salesLoading" class="loading-state">
+            <p>Đang tải ảnh đã bán...</p>
+          </div>
+          
+          <div *ngIf="!salesLoading && sales.length === 0" class="empty-state">
+            <p>Bạn chưa bán ảnh nào</p>
+            <button class="btn btn-primary" routerLink="/library">
+              Tải lên ảnh
+            </button>
+          </div>
+
+          <div *ngIf="!salesLoading && sales.length > 0" class="gallery-grid">
+            <div *ngFor="let sale of sales" class="gallery-item">
+              <div class="gallery-image-wrapper">
+                <img 
+                  [src]="sale.productData?.image || '/assets/placeholder.svg'" 
+                  [alt]="sale.productData?.title"
+                  onError="this.src='/assets/placeholder.svg'"
+                  class="gallery-image"
+                />
+              </div>
+              <div class="gallery-info">
+                <h3>{{ sale.productData?.title }}</h3>
+                <p class="sale-date">Bán: {{ formatDate(sale.createdAt) }}</p>
+                <p class="sale-price">{{ sale.productData?.price | currency: 'VND' }}</p>
+                <p class="buyer">Người mua: {{ sale.buyerId.name }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

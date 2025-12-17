@@ -1,0 +1,56 @@
+<div class="success-container" *ngIf="!loading">
+  <div class="success-card">
+    <!-- Success Icon -->
+    <div class="success-icon">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+
+    <!-- Title -->
+    <h1>Thanh Toán Thành Công!</h1>
+    <p class="subtitle">Cảm ơn bạn đã mua hàng tại E-Market</p>
+
+    <!-- Order Details -->
+    <div class="order-details">
+      <div class="detail-item">
+        <span class="label">Mã Đơn Hàng:</span>
+        <span class="value">{{ orderId }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Số Tiền:</span>
+        <span class="value amount">{{ amount | currency: 'VND':true:'1.0-0' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Mã Giao Dịch:</span>
+        <span class="value">{{ transactionId }}</span>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="message">
+      <p>✉️ Một email xác nhận đã được gửi đến địa chỉ email của bạn.</p>
+      <p>📦 Bạn có thể kiểm tra trạng thái đơn hàng trong trang "Thông tin cá nhân".</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="viewOrders()">
+        <mat-icon>assignment</mat-icon>
+        Xem Đơn Hàng
+      </button>
+      <button mat-raised-button color="accent" (click)="goLibrary()">
+        <mat-icon>shopping_bag</mat-icon>
+        Tiếp Tục Mua Sắm
+      </button>
+      <button mat-raised-button (click)="goHome()">
+        <mat-icon>home</mat-icon>
+        Về Trang Chủ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Đang xử lý...</p>
+</div>

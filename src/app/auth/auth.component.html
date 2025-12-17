@@ -1,10 +1,13 @@
 <div class="auth-container">
   <div class="auth-card">
     <div class="auth-header">
-      <h2 *ngIf="isLoginMode">Login</h2>
-      <h2 *ngIf="!isLoginMode">Register</h2>
+      <h2 *ngIf="isLoginMode && !showOtpVerification">Login</h2>
+      <h2 *ngIf="!isLoginMode && !showOtpVerification">Register</h2>
+      <h2 *ngIf="showOtpVerification">Xác thực Email</h2>
     </div>
-    <form (ngSubmit)="onSubmit()" class="auth-form" novalidate *ngIf="!showForgotPassword">
+    
+    <!-- Login/Register Form -->
+    <form (ngSubmit)="onSubmit()" class="auth-form" novalidate *ngIf="!showForgotPassword && !showOtpVerification">
       <div class="form-group" *ngIf="!isLoginMode">
         <label for="name">Name</label>
         <input id="name" type="text" [(ngModel)]="name" name="name" required />
@@ -39,17 +42,24 @@
     </form>
       
     <!-- Form quên mật khẩu -->
-    <div *ngIf="showForgotPassword" class="forgot-pw-form" style="margin-top:1rem">
+    <div *ngIf="showForgotPassword" class="forgot-pw-form">
+      <div class="forgot-pw-header">
+        <h3>🔑 Khôi phục mật khẩu</h3>
+        <p>Nhập email tài khoản để nhận mật khẩu mới</p>
+      </div>
+      
       <div class="form-group">
-        <label for="forgot-email">Nhập email tài khoản của bạn</label>
+        <label for="forgot-email">Email tài khoản</label>
         <input
           id="forgot-email"
           type="email"
-          [(ngModel)]="fogotEmail"
+          [(ngModel)]="forgotEmail"
           name="forgotEmail"
+          placeholder="your@email.com"
           required
         />
       </div>
+      
       <div class="form-actions">
         <button
           type="button"
@@ -57,18 +67,77 @@
           (click)="onSendResetEmail()"
           [disabled]="loading"
         >
-          Gửi mail khôi phục
+          {{ loading ? 'Đang gửi...' : '📧 Gửi mật khẩu mới' }}
         </button>
         <button
           type="button"
           class="btn btn-outline"
           (click)="showForgotPassword = false"
         >
-          Hủy
+          Quay lại
         </button>
       </div>
-      <p class="error" *ngIf="fogotMessage" style="color:#4caf50;">{{ fogotMessage }}</p>
-      <p class="error" *ngIf="error && !fogotMessage">{{ error }}</p>
+      
+      <p class="message-success" *ngIf="forgotMessage">{{ forgotMessage }}</p>
+      <p class="error" *ngIf="error && !forgotMessage">{{ error }}</p>
+      
+      <div class="forgot-pw-info" *ngIf="forgotMessage">
+        <p style="font-size: 12px; color: #999; margin-top: 15px;">
+          ✓ Mật khẩu mới đã được gửi<br>
+          ✓ Kiểm tra hộp thư của bạn<br>
+          ✓ Đăng nhập bằng mật khẩu mới
+        </p>
+      </div>
+    </div>
+
+    <!-- OTP Verification Form -->
+    <div *ngIf="showOtpVerification" class="otp-verification-form">
+      <div class="otp-content">
+        <p class="otp-subtitle">Nhập mã OTP đã được gửi tới email <strong>{{ otpEmail }}</strong></p>
+        
+        <div class="form-group">
+          <label for="otp-code">Mã OTP (6 chữ số)</label>
+          <input
+            id="otp-code"
+            type="text"
+            [(ngModel)]="otpCode"
+            name="otpCode"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="onVerifyOtp()"
+            [disabled]="loading || otpCode.length !== 6"
+          >
+            {{ loading ? 'Đang xử lý...' : 'Xác thực' }}
+          </button>
+        </div>
+
+        <div class="otp-timer">
+          <p *ngIf="otpTimer > 0" style="color: #666; font-size: 14px;">
+            Mã OTP sẽ hết hạn sau: <strong>{{ getOtpTimerText() }}</strong>
+          </p>
+          <button
+            type="button"
+            class="btn btn-link-small"
+            (click)="onResendOtp()"
+            [disabled]="!canResendOtp || loading"
+            style="margin-top: 10px;"
+          >
+            {{ canResendOtp ? 'Gửi lại mã OTP' : 'Chờ để gửi lại' }}
+          </button>
+        </div>
+
+        <p class="error" *ngIf="error">{{ error }}</p>
+        <p class="success" *ngIf="otpMessage" style="color:#4caf50;">{{ otpMessage }}</p>
+      </div>
     </div>
   </div>
 </div>

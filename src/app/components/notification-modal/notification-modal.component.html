@@ -1,0 +1,9 @@
+<div *ngIf="visible" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div [class]="'modal-content modal-' + type">
+      <div class="modal-icon">{{ getIcon() }}</div>
+      <div class="modal-message">{{ message }}</div>
+      <button class="modal-close-btn" (click)="closeModal()">Đóng</button>
+    </div>
+  </div>
+</div>

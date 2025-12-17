@@ -1,0 +1,56 @@
+<div class="failed-container" *ngIf="!loading">
+  <div class="failed-card">
+    <!-- Error Icon -->
+    <div class="error-icon">
+      <mat-icon>error</mat-icon>
+    </div>
+
+    <!-- Title -->
+    <h1>Thanh Toán Thất Bại</h1>
+    <p class="subtitle">Giao dịch không thể hoàn tất</p>
+
+    <!-- Error Details -->
+    <div class="error-details">
+      <div class="error-code">
+        <span class="label">Mã Lỗi:</span>
+        <span class="value">{{ errorCode }}</span>
+      </div>
+      <div class="error-message">
+        <span class="label">Chi Tiết:</span>
+        <span class="value">{{ errorMessage }}</span>
+      </div>
+    </div>
+
+    <!-- Help Message -->
+    <div class="help-message">
+      <p>💡 <strong>Gợi ý:</strong></p>
+      <ul>
+        <li>Kiểm tra lại thông tin thẻ</li>
+        <li>Đảm bảo tài khoản của bạn có đủ số dư</li>
+        <li>Liên hệ với ngân hàng nếu vấn đề vẫn tiếp diễn</li>
+      </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="retryPayment()">
+        <mat-icon>refresh</mat-icon>
+        Thử Lại
+      </button>
+      <button mat-raised-button color="accent" (click)="goLibrary()">
+        <mat-icon>shopping_bag</mat-icon>
+        Tiếp Tục Mua Sắm
+      </button>
+      <button mat-raised-button (click)="goHome()">
+        <mat-icon>home</mat-icon>
+        Về Trang Chủ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Đang xử lý...</p>
+</div>

@@ -35,8 +35,16 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true
     },
+    // Password reset fields
     passwordResetToken: String,
     passwordResetExpires: Date,
+    // Email verification OTP fields
+    verificationOtp: String,
+    verificationOtpExpires: Date,
+    isEmailVerified: {
+      type: Boolean,
+      default: false
+    },
     lastLogin: Date
   },
   {
