@@ -1,55 +1,58 @@
 <div class="auth-container">
   <div class="auth-card">
     <div class="auth-header">
-      <h2 *ngIf="isLoginMode && !showOtpVerification">Login</h2>
-      <h2 *ngIf="!isLoginMode && !showOtpVerification">Register</h2>
-      <h2 *ngIf="showOtpVerification">Xác thực Email</h2>
+      <h2 *ngIf="isLoginMode && !showOtpVerification"> Đăng Nhập</h2>
+      <h2 *ngIf="!isLoginMode && !showOtpVerification"> Đăng Ký Tài Khoản</h2>
+      <h2 *ngIf="showOtpVerification"> Xác Thực Email</h2>
     </div>
     
-    <!-- Login/Register Form -->
+    <!-- Form Đăng Nhập / Đăng Ký -->
     <form (ngSubmit)="onSubmit()" class="auth-form" novalidate *ngIf="!showForgotPassword && !showOtpVerification">
       <div class="form-group" *ngIf="!isLoginMode">
-        <label for="name">Name</label>
-        <input id="name" type="text" [(ngModel)]="name" name="name" required />
+        <label for="name">👤 Họ Tên</label>
+        <input id="name" type="text" [(ngModel)]="name" name="name" placeholder="Nhập họ tên" required />
       </div>
       <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" type="email" [(ngModel)]="email" name="email" required />
+        <label for="email"> Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="Nhập email của bạn" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input id="password" type="password" [(ngModel)]="password" name="password" required />
+        <label for="password"> Mật Khẩu</label>
+        <input id="password" type="password" [(ngModel)]="password" name="password" placeholder="Nhập mật khẩu" required />
       </div>
+      
+      <p class="error" *ngIf="error">{{ error }}</p>
+      
       <div class="form-actions">
         <button type="submit" class="btn btn-primary">
-          {{ isLoginMode ? 'Login' : 'Register' }}
+          {{ isLoginMode ? '✓ Đăng Nhập' : '✓ Đăng Ký' }}
         </button>
         <button type="button" (click)="toggleMode()" class="btn btn-outline">
-          {{ isLoginMode ? 'Create new account' : 'Already have account? Login' }}
+          {{ isLoginMode ? 'Tạo tài khoản mới' : 'Đã có tài khoản? Đăng nhập' }}
         </button>
       </div>
+      
       <!-- Nút quên mật khẩu cho LOGIN mode -->
       <button
         *ngIf="isLoginMode && !showForgotPassword"
         type="button"
         class="btn btn-link"
         (click)="showForgotPassword = true"
-        style="margin-top: 10px; color: #90caf9; background: none; border: none; cursor: pointer;"
+        style="margin-top: 15px; width: 100%; color: #2b4eeb; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: 500;"
       >
-        Quên mật khẩu?
+         Quên mật khẩu?
       </button>
-      <p class="error" *ngIf="error">{{ error }}</p>
     </form>
       
-    <!-- Form quên mật khẩu -->
+    <!-- Form Quên Mật Khẩu -->
     <div *ngIf="showForgotPassword" class="forgot-pw-form">
       <div class="forgot-pw-header">
-        <h3>🔑 Khôi phục mật khẩu</h3>
+        <h3> Khôi Phục Mật Khẩu</h3>
         <p>Nhập email tài khoản để nhận mật khẩu mới</p>
       </div>
       
       <div class="form-group">
-        <label for="forgot-email">Email tài khoản</label>
+        <label for="forgot-email"> Email Tài Khoản</label>
         <input
           id="forgot-email"
           type="email"
@@ -60,6 +63,9 @@
         />
       </div>
       
+      <p class="error" *ngIf="error && !forgotMessage">{{ error }}</p>
+      <p class="message-success" *ngIf="forgotMessage">{{ forgotMessage }}</p>
+      
       <div class="form-actions">
         <button
           type="button"
@@ -67,36 +73,33 @@
           (click)="onSendResetEmail()"
           [disabled]="loading"
         >
-          {{ loading ? 'Đang gửi...' : '📧 Gửi mật khẩu mới' }}
+          {{ loading ? '⏳ Đang gửi...' : ' Gửi Mật Khẩu Mới' }}
         </button>
         <button
           type="button"
           class="btn btn-outline"
           (click)="showForgotPassword = false"
         >
-          Quay lại
+          ← Quay Lại
         </button>
       </div>
       
-      <p class="message-success" *ngIf="forgotMessage">{{ forgotMessage }}</p>
-      <p class="error" *ngIf="error && !forgotMessage">{{ error }}</p>
-      
       <div class="forgot-pw-info" *ngIf="forgotMessage">
-        <p style="font-size: 12px; color: #999; margin-top: 15px;">
+        <p style="font-size: 13px; color: #4caf50; margin-top: 15px; line-height: 1.8;">
           ✓ Mật khẩu mới đã được gửi<br>
-          ✓ Kiểm tra hộp thư của bạn<br>
+          ✓ Kiểm tra hộp thư inbox của bạn<br>
           ✓ Đăng nhập bằng mật khẩu mới
         </p>
       </div>
     </div>
 
-    <!-- OTP Verification Form -->
+    <!-- Form Xác Thực OTP -->
     <div *ngIf="showOtpVerification" class="otp-verification-form">
       <div class="otp-content">
         <p class="otp-subtitle">Nhập mã OTP đã được gửi tới email <strong>{{ otpEmail }}</strong></p>
         
         <div class="form-group">
-          <label for="otp-code">Mã OTP (6 chữ số)</label>
+          <label for="otp-code"> Mã OTP (6 chữ số)</label>
           <input
             id="otp-code"
             type="text"
@@ -109,6 +112,9 @@
           />
         </div>
 
+        <p class="error" *ngIf="error">{{ error }}</p>
+        <p class="success" *ngIf="otpMessage" style="color:#4caf50;">{{ otpMessage }}</p>
+
         <div class="form-actions">
           <button
             type="button"
@@ -116,27 +122,24 @@
             (click)="onVerifyOtp()"
             [disabled]="loading || otpCode.length !== 6"
           >
-            {{ loading ? 'Đang xử lý...' : 'Xác thực' }}
+            {{ loading ? ' Đang xử lý...' : '✓ Xác Thực' }}
           </button>
         </div>
 
         <div class="otp-timer">
           <p *ngIf="otpTimer > 0" style="color: #666; font-size: 14px;">
-            Mã OTP sẽ hết hạn sau: <strong>{{ getOtpTimerText() }}</strong>
+             Mã OTP sẽ hết hạn sau: <strong>{{ getOtpTimerText() }}</strong>
           </p>
           <button
             type="button"
             class="btn btn-link-small"
             (click)="onResendOtp()"
             [disabled]="!canResendOtp || loading"
-            style="margin-top: 10px;"
+            style="margin-top: 10px; color: #667eea;"
           >
-            {{ canResendOtp ? 'Gửi lại mã OTP' : 'Chờ để gửi lại' }}
+            {{ canResendOtp ? ' Gửi lại mã OTP' : 'Chờ để gửi lại...' }}
           </button>
         </div>
-
-        <p class="error" *ngIf="error">{{ error }}</p>
-        <p class="success" *ngIf="otpMessage" style="color:#4caf50;">{{ otpMessage }}</p>
       </div>
     </div>
   </div>

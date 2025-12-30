@@ -6,27 +6,30 @@
   justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.55));
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* Card */
 .auth-card {
   width: 100%;
-  max-width: 420px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 1.8rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
+  max-width: 450px;
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
 /* Header */
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
 .auth-header h2 {
-  margin: 0 0 0.8rem 0;
-  font-family: "Reggae One", cursive;
-  color: #ffffff;
-  font-size: 1.6rem;
+  margin: 0;
+  color: #5671e7;
+  font-size: 1.8rem;
+  font-weight: 600;
   letter-spacing: 0.5px;
 }
 
@@ -34,41 +37,53 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 /* Labels and inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .form-group label {
   display: block;
-  font-size: 0.9rem;
-  color: #dfe6e9;
-  margin-bottom: 0.28rem;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.55rem 0.7rem;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: #ffffff;
-  color: #111;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  color: #333;
   font-size: 0.95rem;
   box-sizing: border-box;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: all 0.3s ease;
+  font-family: inherit;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #6eb7ff;
-  box-shadow: 0 0 0 4px rgba(110,183,255,0.08);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #999;
 }
 
 /* Actions */
 .form-actions {
   display: flex;
-  gap: 0.7rem;
-  align-items: center;
-  margin-top: 0.25rem;
+  gap: 0.8rem;
+  flex-direction: column;
+  margin-top: 1rem;
 }
 
 /* Buttons */
@@ -76,33 +91,58 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0.9rem;
+  padding: 0.75rem 1.2rem;
   font-size: 0.95rem;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: 500;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 /* Primary */
 .btn-primary {
-  background: linear-gradient(180deg,#1976d2,#125ea8);
-  color: #fff;
-  border: 1px solid rgba(0,0,0,0.25);
-  box-shadow: 0 6px 12px rgba(18,94,168,0.25);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Outline / link-like button */
 .btn-outline {
   background: transparent;
-  color: #97d3ff;
-  border: 1px solid rgba(151,211,255,0.18);
-  padding: 0.48rem 0.8rem;
+  color: #667eea;
+  border: 2px solid #667eea;
+  padding: 0.65rem 1rem;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.btn-outline:active:not(:disabled) {
+  background: rgba(102, 126, 234, 0.2);
 }
 
 /* Error text */
 .error {
-  color: #ffbdbd;
+  color: #d32f2f;
   margin-top: 0.5rem;
   font-size: 0.88rem;
+  line-height: 1.4;
 }
 
 /* Success message */
@@ -110,6 +150,7 @@
   color: #4caf50;
   margin-top: 0.5rem;
   font-size: 0.88rem;
+  line-height: 1.8;
 }
 
 /* Forgot Password Form */
@@ -126,13 +167,14 @@
 }
 
 .forgot-pw-header h3 {
-  color: #dfe6e9;
+  color: #667eea;
   font-size: 1.2rem;
   margin: 0 0 0.5rem 0;
+  font-weight: 600;
 }
 
 .forgot-pw-header p {
-  color: #90caf9;
+  color: #666;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -143,6 +185,8 @@
   padding: 10px;
   border-radius: 4px;
   margin-top: 0.5rem;
+  color: #2e7d32;
+  font-size: 0.88rem;
 }
 
 /* OTP Verification Form */
@@ -160,10 +204,11 @@
 }
 
 .otp-subtitle {
-  color: #dfe6e9;
+  color: #666;
   font-size: 0.95rem;
   margin: 0;
   text-align: center;
+  line-height: 1.5;
 }
 
 .otp-content .form-group input {
@@ -177,21 +222,35 @@
 .otp-timer {
   text-align: center;
   margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.otp-timer.warning {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.otp-timer.danger {
+  color: #d32f2f;
+  font-weight: 600;
 }
 
 .btn-link-small {
   background: none;
   border: none;
-  color: #90caf9;
+  color: #667eea;
   cursor: pointer;
   font-size: 0.85rem;
   padding: 0;
   text-decoration: underline;
   transition: color 0.2s;
+  font-weight: 500;
 }
 
 .btn-link-small:hover:not(:disabled) {
-  color: #64b5f6;
+  color: #764ba2;
+  text-decoration: none;
 }
 
 .btn-link-small:disabled {
@@ -202,26 +261,50 @@
 /* Small screens */
 @media (max-width: 480px) {
   .auth-card {
-    padding: 1rem;
-    margin: 0 0.5rem;
+    padding: 2rem 1.5rem;
+    margin: 0.5rem;
+    border-radius: 12px;
   }
 
   .auth-header h2 {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    gap: 0.4rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input {
+    padding: 0.65rem 0.8rem;
+    font-size: 0.9rem;
   }
 
   .form-actions {
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .btn-outline {
-    width: 100%;
-    text-align: center;
+    padding: 0.8rem;
   }
 
   .otp-content .form-group input {
     font-size: 1.2rem;
     letter-spacing: 5px;
+  }
+
+  .forgot-pw-header h3 {
+    font-size: 1.1rem;
   }
 }
