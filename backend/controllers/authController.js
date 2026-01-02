@@ -22,13 +22,36 @@ exports.register = async (req, res) => {
 
     // Validate input
     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp tên, email và mật khẩu' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp tên, email và mật khẩu',
+        errorCode: 'MISSING_FIELDS'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        message: 'Email không hợp lệ',
+        errorCode: 'INVALID_EMAIL_FORMAT'
+      });
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        message: 'Mật khẩu phải có ít nhất 6 ký tự',
+        errorCode: 'PASSWORD_TOO_SHORT'
+      });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email đã được sử dụng' });
+      return res.status(409).json({ 
+        message: 'Email này đã được sử dụng. Vui lòng dùng email khác hoặc đăng nhập.',
+        errorCode: 'EMAIL_ALREADY_EXISTS'
+      });
     }
 
     // Create new user
@@ -59,7 +82,29 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Lỗi đăng ký', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    // Validation error
+    if (error.name === 'ValidationError') {
+      return res.status(422).json({ 
+        message: 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.',
+        errorCode: 'VALIDATION_ERROR'
+      });
+    }
+
+    // Default server error
+    res.status(500).json({ 
+      message: 'Lỗi đăng ký. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
@@ -70,19 +115,28 @@ exports.login = async (req, res) => {
 
     // Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp email và mật khẩu' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp email và mật khẩu',
+        errorCode: 'MISSING_CREDENTIALS'
+      });
     }
 
     // Find user and get password field
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res.status(401).json({ message: 'Email hoặc mật khẩu không chính xác' });
+      return res.status(401).json({ 
+        message: 'Email hoặc mật khẩu không chính xác',
+        errorCode: 'INVALID_EMAIL'
+      });
     }
 
     // Check password
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: 'Email hoặc mật khẩu không chính xác' });
+      return res.status(401).json({ 
+        message: 'Email hoặc mật khẩu không chính xác',
+        errorCode: 'INVALID_PASSWORD'
+      });
     }
 
     // Update last login
@@ -108,7 +162,21 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Lỗi đăng nhập', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    // Default server error
+    res.status(500).json({ 
+      message: 'Lỗi đăng nhập. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
@@ -129,12 +197,18 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp email' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp email',
+        errorCode: 'MISSING_EMAIL'
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng với email này' });
+      return res.status(404).json({ 
+        message: 'Email này không được đăng ký trong hệ thống',
+        errorCode: 'USER_NOT_FOUND'
+      });
     }
 
     // Generate new password (8 characters)
@@ -158,6 +232,7 @@ exports.forgotPassword = async (req, res) => {
       if (process.env.NODE_ENV === 'production') {
         return res.status(500).json({ 
           message: 'Lỗi khi gửi email. Vui lòng thử lại sau.',
+          errorCode: 'EMAIL_SEND_ERROR',
           error: emailError.message 
         });
       }
@@ -168,7 +243,20 @@ exports.forgotPassword = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Forgot password error:', error);
-    res.status(500).json({ message: 'Lỗi', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    res.status(500).json({ 
+      message: 'Lỗi khôi phục mật khẩu. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
@@ -258,17 +346,26 @@ exports.sendVerificationOtp = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp email' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp email',
+        errorCode: 'MISSING_EMAIL'
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng với email này' });
+      return res.status(404).json({ 
+        message: 'Email này không được đăng ký trong hệ thống',
+        errorCode: 'USER_NOT_FOUND'
+      });
     }
 
     // Check if email already verified
     if (user.isEmailVerified) {
-      return res.status(400).json({ message: 'Email này đã được xác thực' });
+      return res.status(400).json({ 
+        message: 'Email này đã được xác thực',
+        errorCode: 'EMAIL_ALREADY_VERIFIED'
+      });
     }
 
     // Generate OTP (6 digits)
@@ -286,6 +383,7 @@ exports.sendVerificationOtp = async (req, res) => {
       console.error('Failed to send OTP email:', emailError);
       return res.status(500).json({ 
         message: 'Lỗi khi gửi mã OTP. Vui lòng thử lại sau.',
+        errorCode: 'EMAIL_SEND_ERROR',
         error: emailError.message 
       });
     }
@@ -295,7 +393,20 @@ exports.sendVerificationOtp = async (req, res) => {
     });
   } catch (error) {
     console.error('Send OTP error:', error);
-    res.status(500).json({ message: 'Lỗi', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    res.status(500).json({ 
+      message: 'Lỗi gửi mã OTP. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
@@ -305,22 +416,34 @@ exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp email và mã OTP' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp email và mã OTP',
+        errorCode: 'MISSING_CREDENTIALS'
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+      return res.status(404).json({ 
+        message: 'Không tìm thấy người dùng',
+        errorCode: 'USER_NOT_FOUND'
+      });
     }
 
     // Check if OTP is correct
     if (user.verificationOtp !== otp) {
-      return res.status(400).json({ message: 'Mã OTP không chính xác' });
+      return res.status(400).json({ 
+        message: 'Mã OTP không chính xác',
+        errorCode: 'INVALID_OTP'
+      });
     }
 
     // Check if OTP has expired
     if (new Date() > user.verificationOtpExpires) {
-      return res.status(400).json({ message: 'Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.' });
+      return res.status(400).json({ 
+        message: 'Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.',
+        errorCode: 'OTP_EXPIRED'
+      });
     }
 
     // Mark email as verified
@@ -346,7 +469,20 @@ exports.verifyOtp = async (req, res) => {
     });
   } catch (error) {
     console.error('Verify OTP error:', error);
-    res.status(500).json({ message: 'Lỗi', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    res.status(500).json({ 
+      message: 'Lỗi xác thực OTP. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
@@ -356,16 +492,25 @@ exports.resendOtp = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: 'Vui lòng cung cấp email' });
+      return res.status(400).json({ 
+        message: 'Vui lòng cung cấp email',
+        errorCode: 'MISSING_EMAIL'
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+      return res.status(404).json({ 
+        message: 'Không tìm thấy người dùng',
+        errorCode: 'USER_NOT_FOUND'
+      });
     }
 
     if (user.isEmailVerified) {
-      return res.status(400).json({ message: 'Email này đã được xác thực' });
+      return res.status(400).json({ 
+        message: 'Email này đã được xác thực',
+        errorCode: 'EMAIL_ALREADY_VERIFIED'
+      });
     }
 
     // Generate new OTP
@@ -383,6 +528,7 @@ exports.resendOtp = async (req, res) => {
       console.error('Failed to send OTP email:', emailError);
       return res.status(500).json({ 
         message: 'Lỗi khi gửi mã OTP. Vui lòng thử lại sau.',
+        errorCode: 'EMAIL_SEND_ERROR',
         error: emailError.message 
       });
     }
@@ -392,7 +538,20 @@ exports.resendOtp = async (req, res) => {
     });
   } catch (error) {
     console.error('Resend OTP error:', error);
-    res.status(500).json({ message: 'Lỗi', error: error.message });
+    
+    // Network or connection error
+    if (error.name === 'MongooseError' || error.name === 'MongoError') {
+      return res.status(500).json({ 
+        message: 'Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.',
+        errorCode: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    res.status(500).json({ 
+      message: 'Lỗi gửi lại mã OTP. Vui lòng thử lại sau.',
+      errorCode: 'SERVER_ERROR',
+      error: error.message 
+    });
   }
 };
 
