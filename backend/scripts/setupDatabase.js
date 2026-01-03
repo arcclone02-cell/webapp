@@ -8,7 +8,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 // Import models
 const User = require('../models/User');
@@ -16,7 +16,12 @@ const Product = require('../models/Product');
 const Purchase = require('../models/Purchase');
 const Cart = require('../models/Cart');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://admin:MRmagical123@cluster0.pnnzz3r.mongodb.net/e-market';
+if (!process.env.MONGODB_URI) {
+  console.error('❌ Error: MONGODB_URI not set in .env file');
+  process.exit(1);
+}
+
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // ==================== SAMPLE DATA ====================
 

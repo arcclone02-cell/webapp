@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-const Product = require('./models/Product');
-const User = require('./models/User');
-
+const Product = require('../models/Product');
+const User = require('../models/User');
+                                        
+if (!process.env.MONGODB_URI) {
+  console.error('❌ Error: MONGODB_URI not set in .env file');
+  process.exit(1);        
+}
+const MONGODB_URI = process.env.MONGODB_URI;
 // Sample free products from Pexels
 const sampleProducts = [
   {
@@ -58,7 +64,7 @@ const sampleProducts = [
 async function seedFreeProducts() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://admin:MRmagical123@cluster0.pnnzz3r.mongodb.net/e-market', {
+    await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

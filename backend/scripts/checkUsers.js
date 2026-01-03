@@ -9,7 +9,7 @@ const User = require('../models/User');
 async function checkUsers() {
   try {
     console.log('🔗 Kết nối tới MongoDB...');
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://admin:MRmagical123@cluster0.pnnzz3r.mongodb.net/e-market', {
+    await mongoose.connect(process.env.MONGODB_URI || 'URl database mongodb', {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

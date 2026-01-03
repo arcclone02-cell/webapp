@@ -15,7 +15,7 @@ const Product = require('../models/Product');
 const Purchase = require('../models/Purchase');
 const Cart = require('../models/Cart');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://admin:MRmagical123@cluster0.pnnzz3r.mongodb.net/e-market';
+const MONGODB_URI = process.env.MONGODB_URI || 'URl database mongodb';
 
 // Sample users
 const sampleUsers = [
